@@ -1,11 +1,18 @@
 ---
-title: "Group 7 – Job Market Research 2024"
-format: html
+title: "Job Market Research 2024"
+author: "Group 7"
+date: 09/10/2025
+format: 
+    html:
+        bibliography: references.bib
+        csl: csl/econometrica.csl
+        toc: true
 ---
 
 ## Introduction
 
 <!-- Brief intro to project topic -->
+
 
 ## Research Rationale
 

@@ -5,6 +5,6 @@ format: html
 
 ## Group 7 Members
 
-- **Leo Liu** – [LinkedIn](https://linkedin.com/in/leoliu-yc) | Career interests: [Fill in]
+- **Leo Liu** – [LinkedIn](https://linkedin.com/in/leoliu-yc) | Career interests: 
 - **Member 2** – 
 - **Member 3** - 
