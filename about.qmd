@@ -1,5 +1,10 @@
 ---
-title: "About"
+title: "About the Team"
+format: html
 ---
 
-About this site
+## Group 7 Members
+
+- **Leo Liu** – [LinkedIn](https://linkedin.com/in/leoliu-yc) | Career interests: [Fill in]
+- **Member 2** – 
+- **Member 3** - 

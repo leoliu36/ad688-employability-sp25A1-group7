@@ -2,20 +2,23 @@ project:
   type: website
 
 website:
-  title: "add688-employability-sp25A1-group7"
+  title: "AD688 Group 7 – Job Market Analysis 2024"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - text: "Home"
+        file: index.qmd
+      - text: "Team Analysis"
+        file: team_analysis.qmd
+      - text: "Career Plans"
+        file: career_plan.qmd
+      - text: "About"
+        file: about.qmd
+  page-navigation: true
 
 format:
   html:
-    theme:
-      - cosmo
-      - brand
+    theme: default
     css: styles.css
     toc: true
-
-
-
+    bibliography: references.bib
+    csl: csl/econometrica.csl

@@ -1,0 +1,19 @@
+---
+title: "Team Analysis –  Trends and Insights"
+format: html
+---
+
+## Overview
+
+<!-- Brief overview of the dataset, tools used, and focus -->
+
+## Key Findings
+
+<!-- Describe 2–4 major insights -->
+
+## Visualizations
+
+<!-- Embed figures or charts -->
+
+```{python}
+# Example placeholder for Plotly/Seaborn chart

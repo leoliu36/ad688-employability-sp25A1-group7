@@ -1,7 +1,20 @@
 ---
-title: "add688-employability-sp25A1-group7"
+title: "Group 7 – Job Market Research 2024"
+format: html
 ---
 
-This is a Quarto website.
+## Introduction
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+<!-- Brief intro to project topic -->
+
+## Research Rationale
+
+<!-- 1-2 paragraphs: for choosing this topic and it's relevance in 2024 -->
+
+## Literature Review Summary
+
+<!-- List and briefly describe 3–5 academic sources -->
+
+## Topic Focus
+
+<!-- e.g., Restructuring of comp due to AI, inflation, and remote work  -->
