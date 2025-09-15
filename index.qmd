@@ -1,6 +1,18 @@
 ---
 title: "Job Market Research 2024"
-author: "Group 7"
+author:   
+  - name: Angelina McKim
+    affiliations:
+      - id: bu
+        name: Boston University
+        city: Boston
+        state: MA
+  - name: Devin Blanchard
+    affiliations:
+      - ref: bu
+  - name: Leo Liu
+    affiliations:
+      - ref: bu
 date: 2025-09-10
 ---
 
