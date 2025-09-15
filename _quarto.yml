@@ -5,10 +5,10 @@ website:
   title: "AD688 Group 7 – Job Market Analysis 2024"
   navbar:
     left:
-      - text: "Home"
+      - text: "Project Overview"
         file: index.qmd
-      - text: "Team Analysis"
-        file: team_analysis.qmd
+      - text: "Data Analysis"
+        file: data_analysis.qmd
       - text: "Career Plans"
         file: career_plan.qmd
       - text: "About"

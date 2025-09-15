@@ -1,17 +1,31 @@
 [
   {
-    "objectID": "career_plan.html#member-2-name",
-    "href": "career_plan.html#member-2-name",
-    "title": "Career Strategy Plans",
-    "section": "Member 2 – Name",
-    "text": "Member 2 – Name\n\nTarget Roles\n\n\n\nSkill Gap Plan\n\n\n\nStrategy"
+    "objectID": "data_analysis.html#key-findings",
+    "href": "data_analysis.html#key-findings",
+    "title": "Data Analysis",
+    "section": "2 Key Findings",
+    "text": "2 Key Findings"
   },
   {
-    "objectID": "career_plan.html#member-3-name",
-    "href": "career_plan.html#member-3-name",
-    "title": "Career Strategy Plans",
-    "section": "Member 3 – Name",
-    "text": "Member 3 – Name\n\nTarget Roles\n\n\n\nSkill Gap Plan\n\n\n\nStrategy"
+    "objectID": "data_analysis.html#visualizations",
+    "href": "data_analysis.html#visualizations",
+    "title": "Data Analysis",
+    "section": "3 Visualizations",
+    "text": "3 Visualizations"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About the Team",
+    "section": "",
+    "text": "Leo Liu – LinkedIn | Career interests:\nMember 2 –\nMember 3 -"
+  },
+  {
+    "objectID": "about.html#group-7-members",
+    "href": "about.html#group-7-members",
+    "title": "About the Team",
+    "section": "",
+    "text": "Leo Liu – LinkedIn | Career interests:\nMember 2 –\nMember 3 -"
   },
   {
     "objectID": "index.html",
@@ -32,34 +46,20 @@
     "href": "index.html#literature-review-summary",
     "title": "Job Market Research 2024",
     "section": "Literature Review Summary",
-    "text": "Literature Review Summary\nThe rise of Artificial Intelligence (AI) has reshaped the job market across the US, with demand for AI-related skills increasing dramatically. According to PwC ((2024)), jobs that require AI specialist skills are growing 3.5 times faster than all other job markets, with skilled AI workers being paid up to 25% more in some sectors. However, this increase in compensation is not limited to workers specialized in AI. As shown by Mäkelä and Stephany ((2024)), non-AI roles that require complementary skills such as digital literacy, analytical thinking, and teamwork are also seeing a 5–10% wage increase. By analyzing US job vacancy data from 2018–2024, Stephany, Mira, and Bone ((2025)) observed that AI-related jobs are significantly more likely to include non-monetary benefits as part of the compensation package, including parental leave and remote working options.\nBeyond the benefit of not having to commute and the ability to work from anywhere, long-distance and remote roles are often sought after by job seekers due to faster wage growth. In a study comparing the pay trends of remote versus in-office workers in the same occupation, Pabilonia and Vernon ((2025)) found that remote workers experienced 4.4% faster annual wage growth, especially in professional and technical sectors. Furthermore, ADP Research Institute ((2024)) reports that workers who transitioned into remote roles with the same employer saw up to 16 percentage points higher wage growth than their counterparts who remained local. This demonstrates that switching into remote work can lead to significantly higher wage growth, even within the same company and/or job category."
+    "text": "Literature Review Summary\nThe rise of Artificial Intelligence (AI) has reshaped the job market across the US, with demand for AI-related skills increasing dramatically. According to a study by PWC, jobs that require AI specialist skills are growing 3.5 times faster than all other job markets, with skilled AI workers being paid up to 25% more in some sectors (PwC (2024)). However, this increase in compensation is not limited to workers specialized in AI. Non-AI roles that require complementary skills such as digital literacy, analytical thinking, and teamwork are also seeing a 5–10% wage increase (Mäkelä and Stephany (2024)). According to US job vacancy data from 2018–2024, AI-related jobs are significantly more likely to include non-monetary benefits as part of the compensation package, including parental leave and remote working options (Stephany, Mira, and Bone (2025)).\nBeyond the benefit of not having to commute and the ability to work from anywhere, long-distance and remote roles are often sought after by job seekers due to faster wage growth. In a study comparing the pay trends of remote versus in-office workers in the same occupation, remote workers experienced 4.4% faster annual wage growth, especially in professional and technical sectors (Pabilonia and Vernon (2025)). Furthermore, workers who transitioned into remote roles with the same employer saw up to 16 percentage points higher wage growth than their counterparts who remained local (Romem (2024)). This demonstrates that switching into remote work can lead to significantly higher wage growth, even within the same company and/or job category."
   },
   {
-    "objectID": "team_analysis.html#key-findings",
-    "href": "team_analysis.html#key-findings",
-    "title": "Team Analysis – Trends and Insights",
-    "section": "Key Findings",
-    "text": "Key Findings"
+    "objectID": "career_plan.html#member-2-name",
+    "href": "career_plan.html#member-2-name",
+    "title": "Career Strategy Plans",
+    "section": "Member 2 – Name",
+    "text": "Member 2 – Name\n\nTarget Roles\n\n\n\nSkill Gap Plan\n\n\n\nStrategy"
   },
   {
-    "objectID": "team_analysis.html#visualizations",
-    "href": "team_analysis.html#visualizations",
-    "title": "Team Analysis – Trends and Insights",
-    "section": "Visualizations",
-    "text": "Visualizations"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About the Team",
-    "section": "",
-    "text": "Leo Liu – LinkedIn | Career interests:\nMember 2 –\nMember 3 -"
-  },
-  {
-    "objectID": "about.html#group-7-members",
-    "href": "about.html#group-7-members",
-    "title": "About the Team",
-    "section": "",
-    "text": "Leo Liu – LinkedIn | Career interests:\nMember 2 –\nMember 3 -"
+    "objectID": "career_plan.html#member-3-name",
+    "href": "career_plan.html#member-3-name",
+    "title": "Career Strategy Plans",
+    "section": "Member 3 – Name",
+    "text": "Member 3 – Name\n\nTarget Roles\n\n\n\nSkill Gap Plan\n\n\n\nStrategy"
   }
 ]
