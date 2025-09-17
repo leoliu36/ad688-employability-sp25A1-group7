@@ -1,6 +1,8 @@
 ---
 title: "Data Analysis"
 subtitle: "Comprehensive Data Cleaning & Exploratory Analysis of Job Market Trends"
+execute:
+  kernel: ad688-venv
 bibliography: references.bib
 csl: csl/econometrica.csl
 format: 
@@ -14,6 +16,26 @@ format:
 
 <!-- Brief overview of the dataset, tools used, and focus -->
 
+## Data Cleaning Methodology
+
+# 1. Handling of missing values 
+Depending on the field type, missing values were addressed as follows: 
+- Missing values in numerical fields (such as Salary and Minimum Years of Experience) are imputed with the median 
+- Missing values in categorical fields (such as Industry and Company Name) are imputed with "Unknown"
+- Column(s) with more than 50% missing data are removed entirely.
+  
+# 2. Remove Unnecessary Columns
+Irrelevant or redundant columns such as outdated NAICS/SOC codes and tracking data are removed from the dataset to ensure consistency.  
+
+# 3. Remove Duplicates 
+To identify and eliminate true duplicates from the dataset, job listings that have identical values for the following fields were removed: 
+  - Job Title
+  - Company Name
+  - Location
+  - Posting Date
+  - Skill requirements
+  - Employment type
+
 ## Key Findings
 
 <!-- Describe 2–4 major insights -->
@@ -21,3 +43,79 @@ format:
 ## Visualizations
 
 <!-- Embed figures or charts -->
+
+
+```{python}
+import pandas as pd
+
+# Load lightcast_job_postings.csv 
+df = pd.read_csv("data/lightcast_job_postings.csv")
+df.head()
+df.columns.tolist()
+
+# Drop columns
+columns_to_drop = [
+  # tracking & other metadata
+    "ID", "LAST_UPDATED_DATE", "LAST_UPDATED_TIMESTAMP", "DUPLICATES",
+    "SOURCE_TYPES", "SOURCES", "URL", "ACTIVE_URLS", "ACTIVE_SOURCES_INFO", "MODELED_EXPIRED", "MODELED_DURATION", "TITLE_RAW", "BODY",
+  # outdated NAICS and SOC codes
+    "NAICS2", "NAICS2_NAME", "NAICS3", "NAICS3_NAME",
+    "NAICS4", "NAICS4_NAME", "NAICS5", "NAICS5_NAME",
+    "NAICS6", "NAICS6_NAME", 
+    "SOC_2", "SOC_2_NAME", "SOC_3", "SOC_3_NAME",
+    "SOC_4", "SOC_4_NAME", "SOC_5", "SOC_5_NAME",
+    "SOC_2021_2", "SOC_2021_2_NAME", "SOC_2021_3", "SOC_2021_3_NAME",
+    "SOC_2021_5", "SOC_2021_5_NAME",
+    "NAICS_2022_2", "NAICS_2022_2_NAME", "NAICS_2022_3", "NAICS_2022_3_NAME",
+    "NAICS_2022_4", "NAICS_2022_4_NAME", "NAICS_2022_5", "NAICS_2022_5_NAME"
+]
+df.drop(columns=columns_to_drop, inplace=True)
+df.info()
+```
+
+```{python}
+import missingno as msno
+import matplotlib.pyplot as plt
+
+# Visualize missing data using missingno heatmap
+plt.figure(figsize=(12, 6))
+msno.bar(df)
+plt.title("Missing Data Bar Chart")
+plt.tight_layout()
+plt.show()
+
+# Identify columns that have a significant amount of missing values and sort by the percentage of missing values
+missing_values_pct = (df.isna().mean() * 100).sort_values(ascending=False).reset_index()
+missing_values_pct.columns = ["Column", "Missing %"]
+print(missing_values_pct.to_string(index=False))
+```
+
+```{python}
+# Fill in missing values for SALARY, INDUSTRY, and other relevant columns
+# Fill categorical columns with "Unknown"
+fill_col_unk = [
+    "EXPIRED", "MSA_INCOMING", "MSA_NAME_INCOMING", "MSA", "MSA_OUTGOING", "MSA_NAME", "COMPANY_RAW", "TITLE_CLEAN", "TITLE", "TITLE_NAME", "COMPANY_NAME", "COMPANY_IS_STAFFING", "EMPLOYMENT_TYPE_NAME", "REMOTE_TYPE_NAME", "EDUCATION_LEVELS_NAME", "MIN_EDULEVELS_NAME", "SKILLS_NAME", "SPECIALIZED_SKILLS_NAME", "CERTIFICATIONS_NAME", "STATE_NAME", "CITY_NAME", "COUNTY_NAME"
+]
+# Loop through and fill missing values
+for col in fill_col_unk:
+    df[col] = df[col].fillna("Unknown")
+
+# Do the same for relevant numerical columns, but fill with median
+fill_col_median = [
+    "SALARY", "SALARY_FROM", "SALARY_TO", "DURATION", "MIN_YEARS_EXPERIENCE"
+]
+for col in fill_col_median:
+    df[col] = df[col].fillna(df[col].median())
+
+# Drop columns with >50% missing values
+df.dropna(thresh=len(df) * 0.5, axis=1, inplace=True)
+df.info()
+```
+
+```{python}
+# Remove duplicate
+df=df.drop_duplicates(subset=["TITLE_CLEAN", "COMPANY_NAME", "LOCATION", "POSTED", "EMPLOYMENT_TYPE_NAME", "REMOTE_TYPE_NAME", "SKILLS_NAME"], keep="first")
+
+# Preview new df
+df.shape
+```
