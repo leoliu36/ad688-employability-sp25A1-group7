@@ -119,3 +119,53 @@ df=df.drop_duplicates(subset=["TITLE_CLEAN", "COMPANY_NAME", "LOCATION", "POSTED
 # Preview new df
 df.shape
 ```
+
+## 5 Exploratory Data Analysis (EDA)
+This section explores job market trends through a series of visualizations. Each plot is chosen to reveal specific patterns in compensation, regional disparities, and the impact of remote work on job roles.
+
+### 5.1 Restructuring of Compensation
+
+#### 5.1.1 Salary by Remote Work Type
+
+**Why this visualization was chosen:** 
+To visually compare not just the average pay, but also the range and consistency of salaries across different work arrangements. This visualization could reveal that remote roles have a wider salary range, indicating that companies are paying a premium for top talent regardless of location.
+
+```{python}
+# 5.1.1 Visual - Compensation
+import plotly.express as px
+import pandas as pd
+
+values_to_exclude = ['Unknown', '[None]']
+df_filtered = df[~df['REMOTE_TYPE_NAME'].isin(values_to_exclude)]
+
+fig = px.box(
+    df_filtered,
+    x="REMOTE_TYPE_NAME",
+    y="SALARY",
+    title="Salary Distribution by Work Arrangement",
+    labels={"REMOTE_TYPE_NAME": "Work Arrangement", "SALARY": "Annual Salary ($)"}
+)
+fig.show()
+```
+
+
+#### 5.1.2 Top Skills vs. Average Salary
+
+**Why this visualization was chosen:**
+To identify which specific skills are most financially valuable in the current job market, connecting AI-related skills to compensation. This could reveal that skills related to AI/ML platforms command a significantly higher salary, even if they aren't the most frequently requested skills overall.
+```{python}
+# 5.1.2 Visual - Skills vs. Salary
+
+# Use SKILLS_NAME to get the top 10 skill names
+top_10_skills = df['SKILLS_NAME'].value_counts().nlargest(10).index
+df_top_skills = df[df['SKILLS_NAME'].isin(top_10_skills)]
+
+fig = px.bar(
+    df_top_skills,
+    x='SKILLS_NAME',  # Use the name column for the x-axis
+    y="SALARY",
+    title="Average Salary for Top 10 Skills",
+    labels={'SKILLS_NAME': "Skill", "SALARY": "Average Annual Salary ($)"}
+)
+fig.show()
+```
