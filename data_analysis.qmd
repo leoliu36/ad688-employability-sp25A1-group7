@@ -18,16 +18,16 @@ format:
 
 ## Data Cleaning Methodology
 
-# 1. Handling of missing values 
+### Handling of missing values 
 Depending on the field type, missing values were addressed as follows: 
 - Missing values in numerical fields (such as Salary and Minimum Years of Experience) are imputed with the median 
 - Missing values in categorical fields (such as Industry and Company Name) are imputed with "Unknown"
 - Column(s) with more than 50% missing data are removed entirely.
   
-# 2. Remove Unnecessary Columns
+### Remove Unnecessary Columns
 Irrelevant or redundant columns such as outdated NAICS/SOC codes and tracking data are removed from the dataset to ensure consistency.  
 
-# 3. Remove Duplicates 
+### Remove Duplicates 
 To identify and eliminate true duplicates from the dataset, job listings that have identical values for the following fields were removed: 
   - Job Title
   - Company Name
@@ -35,14 +35,6 @@ To identify and eliminate true duplicates from the dataset, job listings that ha
   - Posting Date
   - Skill requirements
   - Employment type
-
-## Key Findings
-
-<!-- Describe 2–4 major insights -->
-
-## Visualizations
-
-<!-- Embed figures or charts -->
 
 
 ```{python}
