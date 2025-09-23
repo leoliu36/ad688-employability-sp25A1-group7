@@ -12,22 +12,24 @@ format:
     df-print: paged
 ---
 
-## Overview
+# Overview
 
 <!-- Brief overview of the dataset, tools used, and focus -->
 
-## Data Cleaning Methodology
+# Data Cleaning Methodology
 
-# 1. Handling of missing values 
+Below are the steps we took to prepare the dataset to ensure that our exploratory data analysis (EDA) is as accurate
+
+## Handling of missing values 
 Depending on the field type, missing values were addressed as follows: 
 - Missing values in numerical fields (such as Salary and Minimum Years of Experience) are imputed with the median 
 - Missing values in categorical fields (such as Industry and Company Name) are imputed with "Unknown"
 - Column(s) with more than 50% missing data are removed entirely.
   
-# 2. Remove Unnecessary Columns
-Irrelevant or redundant columns such as outdated NAICS/SOC codes and tracking data are removed from the dataset to ensure consistency.  
+## Remove Unnecessary Columns
+Irrelevant or redundant columns such as outdated NAICS/SOC codes and tracking data are removed from the dataset to ensure consistency. 
 
-# 3. Remove Duplicates 
+## Remove Duplicates 
 To identify and eliminate true duplicates from the dataset, job listings that have identical values for the following fields were removed: 
   - Job Title
   - Company Name
@@ -35,15 +37,6 @@ To identify and eliminate true duplicates from the dataset, job listings that ha
   - Posting Date
   - Skill requirements
   - Employment type
-
-## Key Findings
-
-<!-- Describe 2–4 major insights -->
-
-## Visualizations
-
-<!-- Embed figures or charts -->
-
 
 ```{python}
 import pandas as pd
@@ -118,14 +111,16 @@ df=df.drop_duplicates(subset=["TITLE_CLEAN", "COMPANY_NAME", "LOCATION", "POSTED
 
 # Preview new df
 df.shape
+df.head()
 ```
 
-## 5 Exploratory Data Analysis (EDA)
+
+# Exploratory Data Analysis (EDA)
 This section explores job market trends through a series of visualizations. Each plot is chosen to reveal specific patterns in compensation, regional disparities, and the impact of remote work on job roles.
 
-### 5.1 Restructuring of Compensation
+## Restructuring of Compensation
 
-#### 5.1.1 Salary by Remote Work Type
+### Salary by Remote Work Type
 
 **Why this visualization was chosen:** 
 To visually compare not just the average pay, but also the range and consistency of salaries across different work arrangements. This visualization could reveal that remote roles have a wider salary range, indicating that companies are paying a premium for top talent regardless of location.
@@ -148,8 +143,7 @@ fig = px.box(
 fig.show()
 ```
 
-
-#### 5.1.2 Top Skills vs. Average Salary
+### Top Skills vs. Average Salary
 
 **Why this visualization was chosen:**
 To identify which specific skills are most financially valuable in the current job market, connecting AI-related skills to compensation. This could reveal that skills related to AI/ML platforms command a significantly higher salary, even if they aren't the most frequently requested skills overall.
@@ -169,3 +163,91 @@ fig = px.bar(
 )
 fig.show()
 ```
+
+### Salary Trends by Industry in 2024
+
+```{python}
+# Convert the POSTED date from string to date format
+df["POSTED"] = pd.to_datetime(df["POSTED"], errors="coerce")
+
+# Create a variable for the imputed median salary
+median_salary = df["SALARY"].median()
+
+# Filter for job postings from 2024, specifically looking at Salary and Industry. Exclude unknowns, nulls, and zeros. Exclude imputed median salary. Exclude 'Unclassified Industry' 
+
+df_jp_2024 = df[
+  (df["POSTED"].dt.year==2024) & 
+  (df["SALARY"] > 0) & 
+  (df["SALARY"] != median_salary) &
+  (df["NAICS_2022_6_NAME"]!= "Unknown") &
+  (df["NAICS_2022_6_NAME"]!= "Unclassified Industry")
+]
+
+# Further filter to exclude industries that have an insignificant number of job postings
+# count the number of rows per industry  
+industry_jp_count = df_jp_2024["NAICS_2022_6_NAME"].value_counts()
+
+# summarize the distribution of job counts per industry
+industry_jp_count.describe()
+
+# Set minimum threshold at 100 job postings to ensure statistical significance
+top_jp_industries = industry_jp_count[industry_jp_count > 100].index
+
+# Update df to only show top job posting industries
+df_jp_2024 = df_jp_2024[df_jp_2024["NAICS_2022_6_NAME"].isin(top_jp_industries)]
+
+# Seaborn plot: Analyze Median Salary by Industry 
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# group by industry name and calculate median salary, sort by descending order
+top_industry_salary_order = df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"].median().sort_values(ascending=False).head(12).index
+
+# create bar chart
+plt.figure(figsize = (14,8))
+sns.barplot(
+  orient='h',
+  data=df_jp_2024,
+  x="SALARY",
+  y="NAICS_2022_6_NAME",
+  order=top_industry_salary_order,
+  palette="Set2",
+  width=0.6,
+  estimator=np.median,
+  errorbar=None
+)
+plt.title("Median Salary by Industry in 2024", fontsize=14, weight="bold")
+plt.xlabel("Median Salary ($)", fontsize=12)
+plt.ylabel("Industry", fontsize=12)
+plt.yticks(ha="right", fontsize=9)
+plt.tight_layout()
+plt.show
+
+# Seaborn Plot: Analyze Salary Distribution by Industry
+# determine IQRs by industry:
+q25 = df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"].quantile(0.25)
+q75 = df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"].quantile(0.75)
+# sort by the middle 50% (Q3 - Q1) and name that as the new sorting order
+iqr = (q75 - q25).sort_values(ascending=False).head(12)
+iqr_order = iqr.index  
+
+# Create box plot
+plt.figure(figsize=(14, 12))
+sns.boxplot(
+  data=df_jp_2024,
+  y="NAICS_2022_6_NAME",
+  x="SALARY",
+  order=iqr_order,
+  palette="Set3",
+  width=0.6
+)
+plt.title("Salary Distribution by Industry in 2024", fontsize=14, weight="bold")
+plt.ylabel("Industry", fontsize=12)
+plt.xlabel("Salary ($)", fontsize=12)
+plt.yticks(ha="right", fontsize=9)
+plt.grid(axis="x", linestyle="--", alpha=0.5)
+plt.tight_layout()
+plt.show
+```
+
