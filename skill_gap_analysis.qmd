@@ -1,0 +1,74 @@
+---
+title: "Skill Gap Analysis"
+execute:
+  kernel: ad688-venv
+bibliography: references.bib
+csl: csl/econometrica.csl
+format: 
+  html:
+    toc: true
+    number-sections: true
+    df-print: paged
+---
+
+## Team-based Skill Dataframe
+
+```{python}
+# Create list of relevant analytics skills and rate each member from 1-5
+import pandas as pd
+
+skills_data = {
+    "Name": ["Angelina", "Devin", "Leo"],
+    "Python": [4, 1, 3],
+    "SQL": [5, 3, 3],
+    "Power BI": [3, 4, 4],
+    "Tableau": [3, 3, 2],
+    "Excel": [2, 5, 4],
+    "Machine Learning": [2, 1, 1],
+    "NLP": [2, 1, 1],
+    "Cloud Computing": [2, 2, 1],
+    "AWS": [1, 1, 1]
+}
+
+# Convert to dataframe 
+df_skills = pd.DataFrame(skills_data)
+df_skills.set_index("Name", inplace=True)
+df_skills
+
+# Plot df as a heatmap to visualize skill distribution
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(12, 8))
+sns.heatmap(df_skills, annot=True, cmap="coolwarm", linewidths=0.5)
+plt.title("Team Skill Levels Heatmap")
+plt.show()
+```
+
+### Compare team skills to industry requirements
+```{python}
+## Extract most in-demand skills from JD 
+
+import pandas as pd
+import re 
+from collections import Counter
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize 
+
+# Pull description from job postings and convert into strings
+job_descriptions = df["BODY"].dropna().astype(str).tolist()
+
+## NLP processing
+# Combine all JD strings into one string and convert all to lowercase 
+all_text = " ".join(job_desctiptions).lower()
+
+# Extract only alphabetical and excludes punctuation, numeric values, symbols (Tokenizing)
+words = re.findall(r'\b[a-zA]+\b', all_text)
+
+# Filter to remove common stopwords 
+filtered_words = [word for word in words if word not in stopwords.words("english")]
+
+# List skills to be extracted: 
+skill_list = {"python", "sql", "aws", "docker", "tableau", "excel", "pandas", "numpy", "powerbi", "spark", "machine learning", "nlp", "cloud computing"}
+
+```

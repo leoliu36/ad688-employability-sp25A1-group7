@@ -1,6 +1,6 @@
 ---
-title: "Data Analysis"
-subtitle: "Comprehensive Data Cleaning & Exploratory Analysis of Job Market Trends"
+title: "Exploratory Data Analysis"
+subtitle: "Understanding Job Market Trends in 2024"
 execute:
   kernel: ad688-venv
 bibliography: references.bib
@@ -114,7 +114,6 @@ df.shape
 df.head()
 ```
 
-
 # Exploratory Data Analysis (EDA)
 This section explores job market trends through a series of visualizations. Each plot is chosen to reveal specific patterns in compensation, regional disparities, and the impact of remote work on job roles.
 
@@ -167,6 +166,7 @@ fig.show()
 ### Salary Trends by Industry in 2024
 
 ```{python}
+## Query Setup
 # Convert the POSTED date from string to date format
 df["POSTED"] = pd.to_datetime(df["POSTED"], errors="coerce")
 
@@ -174,7 +174,6 @@ df["POSTED"] = pd.to_datetime(df["POSTED"], errors="coerce")
 median_salary = df["SALARY"].median()
 
 # Filter for job postings from 2024, specifically looking at Salary and Industry. Exclude unknowns, nulls, and zeros. Exclude imputed median salary. Exclude 'Unclassified Industry' 
-
 df_jp_2024 = df[
   (df["POSTED"].dt.year==2024) & 
   (df["SALARY"] > 0) & 
@@ -183,7 +182,7 @@ df_jp_2024 = df[
   (df["NAICS_2022_6_NAME"]!= "Unclassified Industry")
 ]
 
-# Further filter to exclude industries that have an insignificant number of job postings
+## Further filter to exclude industries that have an insignificant number of job postings
 # count the number of rows per industry  
 industry_jp_count = df_jp_2024["NAICS_2022_6_NAME"].value_counts()
 
@@ -196,7 +195,8 @@ top_jp_industries = industry_jp_count[industry_jp_count > 100].index
 # Update df to only show top job posting industries
 df_jp_2024 = df_jp_2024[df_jp_2024["NAICS_2022_6_NAME"].isin(top_jp_industries)]
 
-# Seaborn plot: Analyze Median Salary by Industry 
+
+## Plot: Analyze Median Salary by Industry (Seaborn)
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -224,7 +224,7 @@ plt.yticks(ha="right", fontsize=9)
 plt.tight_layout()
 plt.show
 
-# Seaborn Plot: Analyze Salary Distribution by Industry
+## Plot: Analyze Salary Distribution by Industry (Seaborn)
 # determine IQRs by industry:
 q25 = df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"].quantile(0.25)
 q75 = df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"].quantile(0.75)
