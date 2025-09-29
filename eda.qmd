@@ -38,7 +38,7 @@ fig = px.box(
 fig.show()
 ```
 **Key Insights:**
-This box plot shows that [Remote/Hybrid/On-Site] roles have the highest median salary. The salary range for [Remote/Hybrid/On-Site] jobs is the widest, which may indicate that companies pay more for top talent regardless of location. [Add any other observation you find, like if one category has more high-paying outliers.]
+The median salaries across all work arrangements are similar, clustering around $115,000. However, both Remote and Hybrid Remote roles exhibit a much wider salary range and more high-paying outlier positions, with some remote roles exceeding $350,000. This suggests that while typical pay is comparable, remote-friendly positions offer significantly greater potential for top-end compensation.
 
 ## Top Skills vs. Average Salary
 
@@ -46,24 +46,45 @@ This box plot shows that [Remote/Hybrid/On-Site] roles have the highest median s
 To identify which specific skills are most financially valuable in the current job market, connecting AI-related skills to compensation. This could reveal that skills related to AI/ML platforms command a significantly higher salary, even if they aren't the most frequently requested skills overall.
 ```{python}
 # 5.1.2 Visual - Skills vs. Salary
+import plotly.express as px
+import ast
 
-# Use SKILLS_NAME to get the top 10 skill names
-top_10_skills = df['SKILLS_NAME'].value_counts().nlargest(10).index
-df_top_skills = df[df['SKILLS_NAME'].isin(top_10_skills)]
+# This function safely converts the string of a list into an actual list
+def parse_skills(skill_list_str):
+    try:
+        return ast.literal_eval(skill_list_str)
+    except (ValueError, SyntaxError):
+        return []
+
+# Create a new column with the cleaned lists of skills
+df['SKILLS_LIST'] = df['SKILLS_NAME'].apply(parse_skills)
+
+# Create a new DataFrame where each skill gets its own row
+df_skills_exploded = df.explode('SKILLS_LIST')
+
+# --- Now, create the chart using the cleaned data ---
+top_10_skills_by_count = df_skills_exploded['SKILLS_LIST'].value_counts().nlargest(10).index
+df_top_skills = df_skills_exploded[df_skills_exploded['SKILLS_LIST'].isin(top_10_skills_by_count)]
+
+avg_salary_for_top_skills = df_top_skills.groupby('SKILLS_LIST')['SALARY'].mean().reset_index()
 
 fig = px.bar(
-    df_top_skills,
-    x='SKILLS_NAME',  # Use the name column for the x-axis
+    avg_salary_for_top_skills,
+    x='SKILLS_LIST',
     y="SALARY",
     title="Average Salary for Top 10 Skills",
-    labels={'SKILLS_NAME': "Skill", "SALARY": "Average Annual Salary ($)"}
+    labels={'SKILLS_LIST': "Skill", "SALARY": "Average Annual Salary ($)"}
 )
 fig.show()
 ```
+
 **Key Insights:**
-The bar chart shows that [Name of Skill] has the highest average salary among the top 10 skills. This suggests that specialized skills, particularly those related to AI/ML, are more valuable in the job market than more common skills like [Name of a more common, lower-paying skill].
+Among the 10 most in-demand skills, Data Analysis commands the highest average salary at over $120,000. While compensation for most top skills is competitive, technical skills like Data Analysis and Business Process show a slight financial advantage over the lowest-paid skill in this group, Management, which averages approximately $110,000.
 
 ## Salary Trends by Industry in 2024
+
+**Why this visualization was chosen:**
+[After seeing which skills pay the most, it's important to see which industries offer the highest compensation. A box plot is used here to effectively compare the salary ranges and median salaries across the top 10 industries with the most job postings, helping to identify the most lucrative fields.]
 
 ```{python}
 ## Query Setup
@@ -150,4 +171,55 @@ plt.grid(axis="x", linestyle="--", alpha=0.5)
 plt.tight_layout()
 plt.show
 ```
+**Key Insights**
+[This chart reveals significant salary disparities between industries. Specialized fields like Custom Computer Programming Services and Offices of Certified Public Accountants offer the highest median salaries, both appearing to be above $150,000. In contrast, industries like Commercial Banking display one of the widest salary distributions, while Temporary Help Services shows one of the lowest median salaries of the top 10.]
 
+
+```{python}
+# ----- Export All Charts -----
+import plotly.express as px
+import ast
+
+# Chart 1: Salary by Remote Work Type
+df_filtered = df[~df['REMOTE_TYPE_NAME'].isin(['Unknown', '[None]'])]
+fig1 = px.box(
+    df_filtered,
+    x="REMOTE_TYPE_NAME",
+    y="SALARY",
+    title="Salary Distribution by Work Arrangement"
+)
+fig1.write_image("chart1_salary_by_work_type.png")
+
+# Chart 2: Top Skills vs. Average Salary (Corrected)
+def parse_skills(skill_list_str):
+    try:
+        return ast.literal_eval(skill_list_str)
+    except (ValueError, SyntaxError):
+        return []
+df['SKILLS_LIST'] = df['SKILLS_NAME'].apply(parse_skills)
+df_skills_exploded = df.explode('SKILLS_LIST')
+top_10_skills_by_count = df_skills_exploded['SKILLS_LIST'].value_counts().nlargest(10).index
+df_top_skills = df_skills_exploded[df_skills_exploded['SKILLS_LIST'].isin(top_10_skills_by_count)]
+avg_salary_for_top_skills = df_top_skills.groupby('SKILLS_LIST')['SALARY'].mean().reset_index()
+fig2 = px.bar(
+    avg_salary_for_top_skills,
+    x='SKILLS_LIST',
+    y="SALARY",
+    title="Average Salary for Top 10 Skills"
+)
+fig2.write_image("chart2_skills_vs_salary.png")
+
+# Chart 3: Salary Distribution by Top Industries
+top_10_industries = df['NAICS_2022_6_NAME'].value_counts().nlargest(10).index
+df_top_industries = df[df['NAICS_2022_6_NAME'].isin(top_10_industries)]
+fig3 = px.box(
+    df_top_industries,
+    x="NAICS_2022_6_NAME",
+    y="SALARY",
+    title="Salary Distribution for Top 10 Industries"
+)
+fig3.update_xaxes(tickangle=45)
+fig3.write_image("chart3_salary_by_industry.png")
+
+print("All three final charts have been saved as PNG files.")
+```
