@@ -1,5 +1,5 @@
 ---
-title: "NLP Methods"
+title: "ML Methods"
 execute:
   kernel: ad688-venv
 bibliography: references.bib

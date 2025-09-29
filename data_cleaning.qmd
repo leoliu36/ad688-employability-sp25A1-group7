@@ -1,5 +1,5 @@
 ---
-title: "Data Cleaning Methodology"
+title: "Data Cleaning & Exploration"
 execute:
   kernel: ad688-venv
 bibliography: references.bib
@@ -11,21 +11,26 @@ format:
     df-print: paged
 ---
 
-# Data Cleaning Methodology
-
-Below are the steps we took to prepare the dataset to ensure that our exploratory data analysis (EDA) is as accurate
+# Methodology
+Below are the steps we took to prepare the dataset to ensure accuracy and statistical integrity in our exploratory data analysis (EDA). 
 
 ## Handling of missing values 
-Depending on the field type, missing values were addressed as follows: 
-- Missing values in numerical fields (such as Salary and Minimum Years of Experience) are imputed with the median 
-- Missing values in categorical fields (such as Industry and Company Name) are imputed with "Unknown"
-- Column(s) with more than 50% missing data are removed entirely.
+We addressed missing values based on field type and the amount of data missing per field: 
+
+### Numerical Fields
+Missing values in key numerical fields were imputed with the median of each respective fields. Since these numerical fields are key for grouping and visualizing trends, simply removing empty rows could reduce the diversity of the dataset and introduce biases. The rationale for imputing the median rather than the mean is that the latter tends to be influenced by outliers and skewed distributions, which is often exhibited in fields like "SALARY. Based on the downstream EDA, additional filtering may be applied to exclude imputed values altogether to prevent distorition and ensure statistical integrity in the trends observed. 
+
+### Categorical Fields
+Missing values in key categorical fields were imputed with the placeholder value "Unknown" in order to prevent those rows of data being dropped, leading to unnecessary data loss. By imputing a neutral label like "Unknown", this strategy ensures that data integrity is retained without introducing false assumptions and biases into the downstream analysis. 
+
+### Columns containing Majority Missing Data
+While the above addressed the rationale for imputing missing values, having to impute the majority of a column's values can also create noise, which provides insignificant information and analytical value to the downstream analysis. Therefore, columns containing more than 50% missing values were excluded from the dataset. 
   
 ## Remove Unnecessary Columns
-Irrelevant or redundant columns such as outdated NAICS/SOC codes and tracking data are removed from the dataset to ensure consistency. 
+Columns containing redundant and irrelevant information such as outdated NAICS/SOC codes and tracking metadata were excluded from the dataset. Since the scope of this analysis is focused on job market trends in 2024, it is best practice to remove any outdated NAICS/SOC fields to prevent confusion and duplication. Similarly, metadata fields that could introduce ambiguity and do not add any meaningful to downstream analysis are excluded. 
 
 ## Remove Duplicates 
-To identify and eliminate true duplicates from the dataset, job listings that have identical values for the following fields were removed: 
+To eliminate true duplicates from the dataset, job listings that have identical values in all the fields listed below were removed to prevent distortion and ensure statistical integrity: 
   - Job Title
   - Company Name
   - Location
@@ -33,6 +38,7 @@ To identify and eliminate true duplicates from the dataset, job listings that ha
   - Skill requirements
   - Employment type
 
+## Code Block
 ```{python}
 import pandas as pd
 
@@ -45,7 +51,7 @@ df.columns.tolist()
 columns_to_drop = [
   # tracking & other metadata
     "ID", "LAST_UPDATED_DATE", "LAST_UPDATED_TIMESTAMP", "DUPLICATES",
-    "SOURCE_TYPES", "SOURCES", "URL", "ACTIVE_URLS", "ACTIVE_SOURCES_INFO", "MODELED_EXPIRED", "MODELED_DURATION", "TITLE_RAW", "BODY",
+    "SOURCE_TYPES", "SOURCES", "URL", "ACTIVE_URLS", "ACTIVE_SOURCES_INFO", "MODELED_EXPIRED", "MODELED_DURATION", "TITLE_RAW",
   # outdated NAICS and SOC codes
     "NAICS2", "NAICS2_NAME", "NAICS3", "NAICS3_NAME",
     "NAICS4", "NAICS4_NAME", "NAICS5", "NAICS5_NAME",
@@ -65,7 +71,7 @@ df.info()
 import missingno as msno
 import matplotlib.pyplot as plt
 
-# Visualize missing data using missingno heatmap
+# Visualize missing data using missingno bar graph
 plt.figure(figsize=(12, 6))
 msno.bar(df)
 plt.title("Missing Data Bar Chart")
@@ -90,7 +96,7 @@ for col in fill_col_unk:
 
 # Do the same for relevant numerical columns, but fill with median
 fill_col_median = [
-    "SALARY", "SALARY_FROM", "SALARY_TO", "DURATION", "MIN_YEARS_EXPERIENCE"
+    "SALARY", "SALARY_FROM", "SALARY_TO", "DURATION", "MIN_YEARS_EXPERIENCE", "MAX_YEARS_EXPERIENCE"
 ]
 for col in fill_col_median:
     df[col] = df[col].fillna(df[col].median())
