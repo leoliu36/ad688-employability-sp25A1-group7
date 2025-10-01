@@ -50,37 +50,44 @@ plt.show()
 ## Extract most in-demand skills from JD 
 
 import pandas as pd
-import re 
-import nltk 
-nltk.download("stopwords")
+import re
 from collections import Counter
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize 
+from pathlib import Path
+import nltk
+
+nltk.data.path.append(str(Path.home() / "nltk_data"))
+
+stop_words = stopwords.words("english")
 
 # Pull description from job postings and convert into strings
 job_descriptions = df["BODY"].dropna().astype(str).tolist()
 
 ## NLP processing
 # Combine all JD strings into one string and convert all to lowercase 
-all_text = " ".join(job_desctiptions).lower()
+print("Combining job descriptions...")
+all_text = " ".join(job_descriptions).lower()
 
 # Extract only alphabetical and excludes punctuation, numeric values, symbols (Tokenizing)
+print("Running regex to extract words...")
 words = re.findall(r'\b[a-zA]+\b', all_text)
 
 # Filter to remove common stopwords 
+print("Filtering out stopwords...")
 words_filtered = [word for word in words if word not in stopwords.words("english")]
 
 # Count the frequency of each word
+print("Counting word frequencies...")
 words_count = Counter(words_filtered)
 
 # Define a list of skills: 
-skills_list = {"python", "sql", "aws", "docker", "tableau", "excel", "pandas", "numpy", "power bi", "spark", "machine learning", "nlp", "cloud computing"}
+skills_list = {"python", "sql", "aws", "docker", "tableau", "excel", "pandas", "numpy", "power", "spark", "machine", "learning", "nlp", "cloud", "computing"}
 
 # Extract the predefined skills that actually appear in the job postings text blob; 
 skills_filtered = {
   skill: words_count[skill]
   for skill in skills_list
-  if skill in word_counts
+  if skill in words_count
 }
 
 print("Top data analytics skills from job description")
