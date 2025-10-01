@@ -19,14 +19,14 @@ import pandas as pd
 
 skills_data = {
     "Name": ["Angelina", "Devin", "Leo"],
-    "Python": [4, 1, 3],
-    "SQL": [5, 3, 3],
-    "Power BI": [3, 4, 4],
-    "Tableau": [3, 3, 2],
-    "Excel": [2, 5, 4],
+    "Python": [3, 1, 3],
+    "SQL": [3, 3, 3],
+    "Power BI": [5, 4, 4],
+    "Tableau": [4, 3, 2],
+    "Excel": [5, 5, 4],
     "Machine Learning": [2, 1, 1],
     "NLP": [2, 1, 1],
-    "Cloud Computing": [2, 2, 1],
+    "Cloud Computing": [1, 2, 1],
     "AWS": [1, 1, 1]
 }
 
@@ -51,6 +51,8 @@ plt.show()
 
 import pandas as pd
 import re 
+import nltk 
+nltk.download("stopwords")
 from collections import Counter
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize 
@@ -66,9 +68,23 @@ all_text = " ".join(job_desctiptions).lower()
 words = re.findall(r'\b[a-zA]+\b', all_text)
 
 # Filter to remove common stopwords 
-filtered_words = [word for word in words if word not in stopwords.words("english")]
+words_filtered = [word for word in words if word not in stopwords.words("english")]
 
-# List skills to be extracted: 
-skill_list = {"python", "sql", "aws", "docker", "tableau", "excel", "pandas", "numpy", "powerbi", "spark", "machine learning", "nlp", "cloud computing"}
+# Count the frequency of each word
+words_count = Counter(words_filtered)
+
+# Define a list of skills: 
+skills_list = {"python", "sql", "aws", "docker", "tableau", "excel", "pandas", "numpy", "power bi", "spark", "machine learning", "nlp", "cloud computing"}
+
+# Extract the predefined skills that actually appear in the job postings text blob; 
+skills_filtered = {
+  skill: words_count[skill]
+  for skill in skills_list
+  if skill in word_counts
+}
+
+print("Top data analytics skills from job description")
+for skill, count in skills_filtered.items():
+  print(f"{skill}:{count}")
 
 ```
