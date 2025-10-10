@@ -1,7 +1,5 @@
 ---
 title: "Introduction"
-bibliography: references.bib
-csl: csl/econometrica.csl
 author:   
   - name: Angelina McKim
     affiliations:
@@ -16,6 +14,9 @@ author:
     affiliations:
       - ref: bu
 date: 2025-09-10
+date-modified: 2025-10-10
+bibliography: references.bib
+csl: csl/econometrica.csl
 ---
 
 ## Introduction & Research Rationale

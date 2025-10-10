@@ -2,8 +2,27 @@
 title: "Data Cleaning & Exploration"
 execute:
   kernel: ad688-venv
+author:   
+  - name: Angelina McKim
+    affiliations:
+      - id: bu
+        name: Boston University
+        city: Boston
+        state: MA
+  - name: Devin Blanchard
+    affiliations:
+      - ref: bu
+  - name: Leo Liu
+    affiliations:
+      - ref: bu
+date: 2025-09-10
+date-modified: 2025-10-10
 bibliography: references.bib
 csl: csl/econometrica.csl
+execute:
+  echo: false     
+  warning: false  
+  message: false   
 format: 
   html:
     toc: true
@@ -13,6 +32,19 @@ format:
 
 # Methodology
 Below are the steps we took to prepare the dataset to ensure accuracy and statistical integrity in our exploratory data analysis (EDA). 
+
+## Remove Unnecessary Columns
+Firstly, columns containing redundant and irrelevant information were excluded from the dataset. Since the scope of this analysis is focused on job market trends in 2024, it is best practice to remove any outdated NAICS/SOC fields to prevent confusion and duplication. Similarly, metadata fields or duplicate fields that could introduce ambiguity and do not add any meaningful to downstream analysis are excluded. To summarize, unnecessary columns containing the following information were dropped:
+
+- Meta/tracking
+- Duplicated location info
+- Raw/duplicate title & body
+- Duplicated employment info
+- Education code columns
+- Redundant NAICS/SOC versions
+- LOT/V6 occupation hierarchy
+- ONET & CIP codes 
+- Sectors
 
 ## Handling of missing values 
 We addressed missing values based on field type and the amount of data missing per field: 
@@ -25,12 +57,12 @@ Missing values in key categorical fields were imputed with the placeholder value
 
 ### Columns containing Majority Missing Data
 While the above addressed the rationale for imputing missing values, having to impute the majority of a column's values can also create noise, which provides insignificant information and analytical value to the downstream analysis. Therefore, columns containing more than 50% missing values were excluded from the dataset. 
-  
-## Remove Unnecessary Columns
-Columns containing redundant and irrelevant information such as outdated NAICS/SOC codes and tracking metadata were excluded from the dataset. Since the scope of this analysis is focused on job market trends in 2024, it is best practice to remove any outdated NAICS/SOC fields to prevent confusion and duplication. Similarly, metadata fields that could introduce ambiguity and do not add any meaningful to downstream analysis are excluded. 
+
+![Non-null Data](figures/non-null_data.png)
 
 ## Remove Duplicates 
 To eliminate true duplicates from the dataset, job listings that have identical values in all the fields listed below were removed to prevent distortion and ensure statistical integrity: 
+
   - Job Title
   - Company Name
   - Location
@@ -38,7 +70,205 @@ To eliminate true duplicates from the dataset, job listings that have identical 
   - Skill requirements
   - Employment type
 
-## Code Block
+```{python}
+# ADDING IN MORE LIBRARIES
+# -------------------------------------------------------------------
+# Global Plotly Styling — applies to all visualizations in this report
+# -------------------------------------------------------------------
+import plotly.io as pio
+import plotly.graph_objects as go
+import plotly.express as px
+
+# pio.templates.default = "plotly_white"
+# pio.templates["plotly_white"].layout.font.family = "Arial"
+# pio.templates["plotly_white"].layout.font.size = 14
+# pio.templates["plotly_white"].layout.title.font.size = 18
+
+custom_theme = go.layout.Template(
+    layout=go.Layout(
+        font=dict(family="Arial", size=12, color="#000000"),
+        title=dict(font=dict(size=16, family="Arial", color="#000000")),
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        colorway=px.colors.qualitative.Set2,
+        xaxis=dict(
+            showgrid=False,
+            gridcolor="#c0c0c0",  # same as Matplotlib grid
+            zeroline=False,
+            linecolor="black",
+            mirror=True,
+            ticks="outside",
+            title_font=dict(size=13, family="Arial"),
+            tickfont=dict(size=11, family="Arial")
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor="#c0c0c0",
+            zeroline=False,
+            linecolor="black",
+            mirror=True,
+            ticks="outside",
+            title_font=dict(size=13, family="Arial"),
+            tickfont=dict(size=11, family="Arial")
+        )
+    )
+)
+
+pio.templates["custom_white"] = custom_theme
+pio.templates.default = "custom_white"
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.style.use("seaborn-v0_8-whitegrid") 
+plt.rcParams.update({
+    "font.family": "Arial",
+    "font.size": 7,
+    "axes.titlesize": 11,
+    "axes.labelsize": 9,
+    "axes.edgecolor": "black",
+    "axes.linewidth": 0.8,
+    "figure.dpi": 120,
+    "savefig.dpi": 150,
+    "axes.grid": True,
+    "grid.color": "#c0c0c0"
+})
+sns.set_palette("Set2")
+```
+```{python}
+import pandas as pd
+
+# Load lightcast_job_postings.csv 
+df = pd.read_csv("data/lightcast_job_postings.csv")
+
+# Show the first 5 rows 
+#print(df.head(5).to_string())
+
+# Drop columns
+columns_to_drop = [
+    # Meta/tracking
+    "ID", "LAST_UPDATED_DATE", "LAST_UPDATED_TIMESTAMP", "DUPLICATES", "URL",
+    "ACTIVE_URLS", "ACTIVE_SOURCES_INFO", "SOURCE_TYPES", "SOURCES",
+
+    # Duplicated location info
+    "LOCATION", "CITY", "STATE", "COUNTY", "COUNTY_NAME",
+    "COUNTY_OUTGOING", "COUNTY_NAME_OUTGOING", "COUNTY_INCOMING", "COUNTY_NAME_INCOMING",
+    "MSA", "MSA_OUTGOING", "MSA_NAME_OUTGOING", "MSA_INCOMING", "MSA_NAME_INCOMING",
+
+    # Raw/duplicate title & body
+    "TITLE_RAW", "TITLE_NAME",
+
+    # Duplicated employment info
+    "EMPLOYMENT_TYPE", "EMPLOYMENT_TYPE_NAME",
+
+    # Education code columns
+    "EDUCATION_LEVELS", "EDUCATION_LEVELS_NAME", "MIN_EDULEVELS", "MAX_EDULEVELS",
+
+    # Redundant NAICS/SOC versions
+    "NAICS2", "NAICS2_NAME", "NAICS3", "NAICS3_NAME", "NAICS4", "NAICS4_NAME",
+    "NAICS5", "NAICS5_NAME", "NAICS6", "NAICS6_NAME",
+    "SOC_2", "SOC_2_NAME", "SOC_3", "SOC_3_NAME", "SOC_4", "SOC_4_NAME",
+    "SOC_5",  # keep SOC_5_NAME, drop code
+    "SOC_2021_2", "SOC_2021_2_NAME", "SOC_2021_3", "SOC_2021_3_NAME",
+    "SOC_2021_4", "SOC_2021_4_NAME", "SOC_2021_5", "SOC_2021_5_NAME",
+
+    # LOT/V6 occupation hierarchy (keep only 1 specialized name field)
+    "LOT_CAREER_AREA", "LOT_CAREER_AREA_NAME", "LOT_OCCUPATION", "LOT_OCCUPATION_NAME",
+    "LOT_OCCUPATION_GROUP", "LOT_OCCUPATION_GROUP_NAME",
+    "LOT_V6_SPECIALIZED_OCCUPATION", "LOT_V6_SPECIALIZED_OCCUPATION_NAME",
+    "LOT_V6_OCCUPATION", "LOT_V6_OCCUPATION_NAME",
+    "LOT_V6_OCCUPATION_GROUP", "LOT_V6_OCCUPATION_GROUP_NAME",
+    "LOT_V6_CAREER_AREA", "LOT_V6_CAREER_AREA_NAME",
+
+    # ONET & CIP codes 
+    "ONET", "ONET_NAME", "ONET_2019", "ONET_2019_NAME",
+    "CIP2", "CIP2_NAME", "CIP4", "CIP4_NAME", "CIP6", "CIP6_NAME",
+
+    # Sectors
+    "LIGHTCAST_SECTORS", "LIGHTCAST_SECTORS_NAME",
+
+    # NAICS 2022 lower-level codes
+    "NAICS_2022_2", "NAICS_2022_2_NAME", "NAICS_2022_3", "NAICS_2022_3_NAME",
+    "NAICS_2022_4", "NAICS_2022_4_NAME", "NAICS_2022_5", "NAICS_2022_5_NAME",
+    "NAICS_2022_6",  # drop code, keep name
+]
+
+df.drop(columns=columns_to_drop, inplace=True)
+#df.info()
+
+import missingno as msno
+import matplotlib.pyplot as plt
+
+# Identify columns that have a significant amount of missing values and sort df by the percentage of missing values
+missing_percent = df.isnull().mean().sort_values(ascending=False)*100
+df_sorted = df[missing_percent.index]
+
+# Visualize missing data using missingno bar chart 
+plt.figure(figsize=(12, 6))
+msno.bar(df_sorted)
+plt.title("Non-null Data Bar Chart")
+plt.tight_layout()
+out_path = "figures/non-null_data.png"
+plt.savefig(out_path, dpi=150)
+plt.show()
+
+missing_values_pct = (missing_percent.reset_index().rename(columns={"index": "Column", 0: "Missing %"}))
+print(missing_values_pct.to_string(index=False))
+```
+```{python}
+# Drop columns with >50% missing values
+cols_to_drop_missing = [
+    "MAX_YEARS_EXPERIENCE",
+    "MAX_EDULEVELS_NAME",
+    "SALARY_FROM",
+    "SALARY_TO",
+    "ORIGINAL_PAY_PERIOD",
+    "MODELED_DURATION",
+    "MODELED_EXPIRED",
+    "EXPIRED"
+]
+df.drop(columns=cols_to_drop_missing, inplace=True)
+
+# Fill categorical columns with "Unknown"
+fill_col_unk = [
+    # Company info
+    "COMPANY_NAME", "COMPANY_IS_STAFFING",
+    
+    # Job titles
+    "TITLE", "TITLE_CLEAN",
+    
+    # Occupation/industry (kept name fields)
+    "SOC_5_NAME", "LOT_SPECIALIZED_OCCUPATION_NAME", "NAICS_2022_6_NAME",
+    
+    # Remote type
+    "REMOTE_TYPE_NAME",
+    
+    # Education level (names, not codes)
+    "MIN_EDULEVELS_NAME", 
+    
+    # Location info
+    "STATE_NAME", "CITY_NAME", "MSA_NAME",
+
+    # Skills/certifications (optional — only if you plan to analyze skills)
+    "SKILLS_NAME", "SPECIALIZED_SKILLS_NAME", "COMMON_SKILLS_NAME", "CERTIFICATIONS_NAME"
+]
+
+# Loop through and fill missing values
+for col in fill_col_unk:
+    df[col] = df[col].fillna("Unknown")
+
+# Create a cleaned version for SALARY with median imputation
+df["SALARY_CLEANED"] = df["SALARY"].copy()
+median_salary = df["SALARY"].median()
+df["SALARY_CLEANED"] = df["SALARY_CLEANED"].fillna(median_salary)
+
+# Remove duplicate
+df=df.drop_duplicates(subset=["TITLE_CLEAN", "COMPANY_NAME", "POSTED", "REMOTE_TYPE_NAME", "SKILLS_NAME"], keep="first")
+
+# Preview new df
+df.shape
+```
+
+<!-- ## Code Block
 ```{python}
 import pandas as pd
 
@@ -113,4 +343,4 @@ df=df.drop_duplicates(subset=["TITLE_CLEAN", "COMPANY_NAME", "LOCATION", "POSTED
 # Preview new df
 df.shape
 df.head()
-```
+``` -->

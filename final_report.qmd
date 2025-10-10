@@ -1,0 +1,35 @@
+---
+title: "Job Market Research 2024"
+subtitle: "Final Report"
+author:   
+  - name: Angelina McKim
+    affiliations:
+      - id: bu
+        name: Boston University
+        city: Boston
+        state: MA
+  - name: Devin Blanchard
+    affiliations:
+      - ref: bu
+  - name: Leo Liu
+    affiliations:
+      - ref: bu
+date: 2025-10-10
+date-modified: 2025-10-10
+date-format: long
+format:
+  docx: default
+bibliography: references.bib
+csl: csl/econometrica.csl
+---
+{{< include introduction.qmd >}}
+
+{{< include data_cleaning.qmd >}}
+
+{{< embed skill_gap_analysis.ipynb >}}
+
+{{< embed ml_methods.ipynb >}}
+
+{{< include final_analytics.qmd >}}
+
+{{< include conclusion.qmd >}}
