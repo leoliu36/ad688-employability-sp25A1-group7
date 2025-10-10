@@ -3,8 +3,27 @@ title: "Exploratory Data Analysis"
 subtitle: "Understanding Job Market Trends in 2024"
 execute:
   kernel: ad688-venv
+author:   
+  - name: Angelina McKim
+    affiliations:
+      - id: bu
+        name: Boston University
+        city: Boston
+        state: MA
+  - name: Devin Blanchard
+    affiliations:
+      - ref: bu
+  - name: Leo Liu
+    affiliations:
+      - ref: bu
+date: 2025-09-10
+date-modified: 2025-10-10
 bibliography: references.bib
 csl: csl/econometrica.csl
+execute:
+  echo: false     
+  warning: false  
+  message: false   
 format: 
   html:
     toc: true
@@ -13,47 +32,285 @@ format:
 ---
 
 # Overview
-This section explores job market trends and the restructuring of compensation through a series of visualizations. Each plot is chosen to reveal specific patterns in compensation, regional disparities, and the impact of AI and remote work.
+This section explores job market trends and the restructuring of compensation through a series of visualizations. Each exploratory data analysis (EDA) was chosen to reveal specific patterns in compensation, regional disparities, and the impact of AI and remote work.
 
 ## Salary by Remote Work Type
 
-**Why this visualization was chosen:** 
-To visually compare not just the average pay, but also the range and consistency of salaries across different work arrangements. This visualization could reveal that remote roles have a wider salary range, indicating that companies are paying a premium for top talent regardless of location.
+The purpose of this EDA is to visually compare not just the average pay, but also the range and consistency of salaries across different work arrangements. This visualization could reveal that remote roles have a wider salary range, indicating that companies are paying a premium for top talent regardless of location.
+
+```{python}
+# 5.1.1 Visual - Compensation
+import plotly.express as px
+import pandas as pd
+
+values_to_exclude = ['Unknown', '[None]']
+df_filtered = df[~df['REMOTE_TYPE_NAME'].isin(values_to_exclude)]
+
+fig1 = px.box(
+    df_filtered,
+    x="REMOTE_TYPE_NAME",
+    y="SALARY",
+    title="Salary Distribution by Work Arrangement",
+    labels={"REMOTE_TYPE_NAME": "Work Arrangement", "SALARY": "Annual Salary ($)"},
+    width=800,
+    height=600,
+    color="REMOTE_TYPE_NAME",                         
+    color_discrete_sequence=px.colors.qualitative.Set2
+)
+fig1.show()
+fig1.write_image("figures/salary_by_work_arrangement.png", scale=2)
+```
 
 ![Salary Distribution by Work Arrangement](figures/salary_by_work_arrangement.png)
 
 **Key Insights:**
 The median salaries across all work arrangements are similar, clustering around $115,000. However, both Remote and Hybrid Remote roles exhibit a much wider salary range and more high-paying outlier positions, with some remote roles exceeding $350,000. This suggests that while typical pay is comparable, remote-friendly positions offer significantly greater potential for top-end compensation.
 
+
 ## Top Skills vs. Average Salary
 
-**Why this visualization was chosen:**
-To identify which specific skills are most financially valuable in the current job market, connecting AI-related skills to compensation. This could reveal that skills related to AI/ML platforms command a significantly higher salary, even if they aren't the most frequently requested skills overall.
+The purpose of this EDA is to identify which specific skills are most financially valuable in the current job market, connecting AI-related skills to compensation. This could reveal that skills related to AI/ML platforms command a significantly higher salary, even if they aren't the most frequently requested skills overall.
+
+```{python}
+# 5.1.2 Visual - Skills vs. Salary
+import plotly.express as px
+import ast
+
+# This function safely converts the string of a list into an actual list
+def parse_skills(skill_list_str):
+    try:
+        return ast.literal_eval(skill_list_str)
+    except (ValueError, SyntaxError):
+        return []
+
+# Create a new column with the cleaned lists of skills
+df['SKILLS_LIST'] = df['SKILLS_NAME'].apply(parse_skills)
+
+# Create a new DataFrame where each skill gets its own row
+df_skills_exploded = df.explode('SKILLS_LIST')
+
+# --- Now, create the chart using the cleaned data ---
+top_10_skills_by_count = df_skills_exploded['SKILLS_LIST'].value_counts().nlargest(10).index
+df_top_skills = df_skills_exploded[df_skills_exploded['SKILLS_LIST'].isin(top_10_skills_by_count)]
+
+avg_salary_for_top_skills = df_top_skills.groupby('SKILLS_LIST')['SALARY'].mean().reset_index()
+
+fig2 = px.bar(
+    avg_salary_for_top_skills,
+    x='SKILLS_LIST',
+    y="SALARY",
+    title="Average Salary for Top 10 Skills In Demand",
+    labels={'SKILLS_LIST': "Skill", "SALARY": "Average Annual Salary ($)"},
+    width=800,
+    height=600,                       
+    color_discrete_sequence=px.colors.qualitative.Set2,
+    opacity=0.7
+)
+fig2.show()
+fig2.write_image("figures/topskills_salary.png", scale=2)
+```
 
 ![Average Salary for Top 10 Skills In Demand](figures/topskills_salary.png)
 
 **Key Insights:**
 Among the 10 most in-demand skills, Data Analysis commands the highest average salary at over $120,000. While compensation for most top skills is competitive, technical skills like Data Analysis and Business Process show a slight financial advantage over the lowest-paid skill in this group, Management, which averages approximately $110,000.
 
+
 ## Salary Trends by Top Industries
 
 **Why this visualization was chosen:**
+The purpose of this EDA is to explore how compensation varies across economic sectors and identify which industries offer the highest earning potential. Using the 2024 job posting data and grouping by industry (NAICS 2022 Level-6 codes), this analysis aims to compare the median salary and salary distribution across highest-paying industries within the job market. 
 
+```{python}
+## Query Setup
+# Convert the POSTED date from string to date format
+df["POSTED"] = pd.to_datetime(df["POSTED"], errors="coerce")
+
+# Filter for job postings from 2024, specifically looking at Salary and Industry. Exclude unknowns, nulls, and zeros. Exclude 'Unclassified Industry' 
+df_jp_2024 = df[
+  (df["POSTED"].dt.year==2024) & 
+  (df["SALARY"] > 0) & 
+  (df["SALARY"].notnull()) &
+  (df["NAICS_2022_6_NAME"]!= "Unknown") &
+  (df["NAICS_2022_6_NAME"]!= "Unclassified Industry")
+]
+
+## Further filter to exclude industries that have an insignificant number of job postings
+# count the number of rows per industry  
+industry_jp_count = df_jp_2024["NAICS_2022_6_NAME"].value_counts()
+
+# summarize the distribution of job counts per industry
+industry_jp_count.describe()
+
+# Set minimum threshold at 100 job postings to ensure statistical significance
+top_jp_industries = industry_jp_count[industry_jp_count > 100].index
+
+# Update df to only show top job posting industries
+df_jp_2024 = df_jp_2024[df_jp_2024["NAICS_2022_6_NAME"].isin(top_jp_industries)]
+```
+```{python}
+## Plot: Analyze Median Salary by Industry (Seaborn)
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# group by industry name and calculate median salary, sort by descending order
+top_industry_salary_order = (
+    df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"]
+    .median()
+    .sort_values(ascending=False)
+    .head(12)
+)
+industry_order = top_industry_salary_order.index.tolist()
+
+plt.figure(figsize=(12, 5))
+ax1=sns.barplot(
+    data=df_jp_2024,
+    y="NAICS_2022_6_NAME",
+    x="SALARY",
+    hue="NAICS_2022_6_NAME",
+    order=industry_order,
+    orient='h',
+    palette="Set3",
+    estimator=np.median,
+    errorbar=None,
+    legend=False,
+    alpha=0.8
+)
+
+for patch in ax1.patches:
+    patch.set_alpha(0.8)
+
+plt.title("Median Salary by Industry")
+plt.xlabel("Median Salary ($)")
+plt.ylabel("Industry")
+plt.yticks(ha="right", fontsize=9)
+plt.xticks(fontsize=9)
+plt.tight_layout()
+out_path = "figures/median_salary_by_industry.png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+plt.show()
+```
 
 ![Median Salary by Industry](figures/median_salary_by_industry.png)
 
-**Key Insights**
+```{python}
+## Plot: Analyze Salary Distribution by Industry (Seaborn)
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
 
-**Why this visualization was chosen:**
+# # determine IQRs by industry:
+# q25 = df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"].quantile(0.25)
+# q75 = df_jp_2024.groupby("NAICS_2022_6_NAME")["SALARY"].quantile(0.75)
+# # sort by the middle 50% (Q3 - Q1) and name that as the new sorting order
+# iqr = (q75 - q25).sort_values(ascending=False).head(12)
+
+#iqr_order = iqr.index.to_list()
+industry_order = top_industry_salary_order.index.tolist()
+
+plt.figure(figsize=(12, 5))
+ax2 = sns.boxplot(
+    data=df_jp_2024,
+    y="NAICS_2022_6_NAME",
+    x="SALARY",
+    order=industry_order,
+    palette="Set3",
+    width=0.6,
+    fliersize=2.5,  
+    linewidth=0.8,
+)
+
+for patch in ax2.patches:
+    patch.set_alpha(0.8)
+
+plt.title("Salary Distribution by Industry")
+plt.xlabel("Salary ($)")
+plt.ylabel("Industry")
+plt.yticks(ha="right", fontsize=9)
+plt.xticks(fontsize=9)
+plt.tight_layout()
+
+# Save and display the figure
+out_path = "figures/salary_distribution_by_industry.png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+plt.show()
+```
 
 ![Salary Distribution by Industry](figures/salary_distribution_by_industry.png)
 
 **Key Insights**
 
 
+
+
 ## AI vs. Non-AI Salary Comparison 
 
 **Why this visualization was chosen:**
+
+```{python}
+import pandas as pd
+import re
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Create a lowercase version of the BODY column for keyword searching
+df["BODY"] = df["BODY"].astype(str).str.lower()
+
+# identify AI related keywords 
+ai_keywords = [
+    "machine learn",  # matches 'machine learning', 'machine learner'
+    "data scien",     # matches 'data scientist', 'data science'
+    "artificial intel",  # matches 'artificial intelligence'
+    "deep learn",  
+    "ml engineer",            
+    "data engineer",
+    "computer vision", 
+    "natural language", 
+    "nlp",
+    "big data",
+    "cloud data"
+]
+
+# Create a regex pattern that matches any of the keywords, case-insensitive
+ai_pattern = re.compile(r"|".join([re.escape(k) for k in ai_keywords]), flags=re.IGNORECASE)
+
+# Assign a new column is_ai_job to label job postings with AI or Non-AI based on keyword presence in the BODY text
+df["is_ai_job"] = df["BODY"].apply(lambda text: "AI" if ai_pattern.search(text) else "Non-AI")
+
+# Filter out rows with null or zero salary and outliers 
+df_filtered_1 = df[
+    (df["SALARY"].notnull()) &
+    (df["SALARY"] > 0)
+]
+q1 = df_filtered_1["SALARY"].quantile(0.01)
+q99 = df_filtered_1["SALARY"].quantile(0.99)
+df_filtered_1 = df_filtered_1[(df_filtered_1["SALARY"] >= q1) & (df_filtered_1["SALARY"] <= q99)]
+print(df_filtered_1["is_ai_job"].value_counts())
+```
+```{python}
+plt.figure(figsize=(8, 5))
+ax3=sns.boxplot(
+    data=df_filtered_1, 
+    x="is_ai_job", 
+    y="SALARY",
+    hue="is_ai_job",
+    legend=False,
+    palette="Set3",
+    width=0.4
+)
+
+for patch in ax3.patches:
+    patch.set_alpha(0.8)
+
+plt.title("Salary Distribution: AI vs. Non-AI Jobs")
+plt.xlabel("Job Type", fontsize=9)
+plt.ylabel("Salary ($)", fontsize=9)
+plt.tight_layout()
+plt.show()
+out_path = "figures/AI_v_nonAI_salary_boxplot.png"
+plt.savefig(out_path, dpi=150)
+```
 
 ![Salary Distribution: AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
 
@@ -61,6 +318,34 @@ Among the 10 most in-demand skills, Data Analysis commands the highest average s
 
 
 **Why this visualization was chosen:**
+
+```{python}
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# KDE Plot
+plt.figure(figsize=(8, 5))
+ax4=sns.kdeplot(
+    data=df_filtered_1, 
+    x="SALARY", 
+    hue="is_ai_job", 
+    common_norm=False,
+    linewidth=3,
+    palette="Set2",
+    alpha=0.8
+)
+
+for patch in ax4.patches:
+    patch.set_alpha(0.8)
+
+plt.title("Salary Density: AI vs. Non-AI Jobs")
+plt.xlabel("Salary ($)", fontsize=9)
+plt.ylabel("Density", fontsize=9)
+plt.tight_layout()
+plt.show()
+out_path = "figures/AI_v_nonAI_salary_KDE.png"
+plt.savefig(out_path, dpi=150)
+```
 
 ![Salary Density: AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
 
