@@ -252,6 +252,8 @@ These findings show that companies in technology, professional services, and con
 
 **Why this visualization was chosen:**
 
+The motivation for this analysis was to investigate how specialization in AI-related skills influence salary in today's job market. This analysis differentiates AI vs. non-AI jobs by identifying AI-related keywords such as machine learning, data science, computer vision, and natural language processing in job postings. We then compare the median and distribution of salaries between the two groups to determine whether AI roles command higher compensation than non-AI roles. 
+
 ```{python}
 import pandas as pd
 import re
@@ -317,11 +319,6 @@ plt.savefig(out_path, dpi=150)
 ```
 
 ![Salary Distribution: AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
-
-**Key Insights**
-
-
-**Why this visualization was chosen:**
 
 ```{python}
 import matplotlib.pyplot as plt
