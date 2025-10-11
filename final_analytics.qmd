@@ -29,3 +29,425 @@ format:
     number-sections: true
     df-print: paged
 ---
+
+# Regression, Classification, and Topic Insights
+
+## KMeans Clustering Analysis
+We performed KMeans clustering on job postings using core features (salary, minimum and maximum years of experience). This analysis seeks to segment jobs into groups with similar compensation and experience profiles, and to interpret these clusters using industry categories (NAICS).
+
+### Fit KMeans and Assign Clusters - Data Prep
+We use KMeans clustering to segment jobs into five groups, using standardized salary and experience as inputs. Each posting is assigned to a cluster.
+
+```{python}
+from sklearn.preprocessing import StandardScaler
+
+# Select features for clustering
+cluster_features = ['SALARY', 'MIN_YEARS_EXPERIENCE']
+X = df[cluster_features].dropna()
+
+# Standardize features
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+```
+
+```{python}
+from sklearn.cluster import KMeans
+
+# Fit KMeans model
+n_clusters = 5  # Assignment recommends 5, we must justify if we change
+kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+clusters = kmeans.fit_predict(X_scaled)
+
+# Add cluster labels to DataFrame
+df.loc[X.index, 'KMEANS_CLUSTER'] = clusters
+```
+
+```{python}
+# === Create a label column from the trained KMeans model ===
+try:
+    df["kmeans_labels"] = pd.NA
+    df.loc[X.index, "kmeans_labels"] = kmeans.labels_
+except AttributeError:
+    
+    if "kmeans_labels" not in df.columns:
+        df["kmeans_labels"] = kmeans.fit_predict(X_scaled)
+
+print("KMeans labels column ready:", "kmeans_labels" in df.columns)
+print("Unique clusters:", df["kmeans_labels"].nunique())
+```
+
+```{python}
+# === KMeans Cluster Reference Label Analysis ===
+cluster_col = "kmeans_labels"        
+label_col   = "NAICS_2022_6_NAME"    # required 'reference label' for interpretation
+
+crosstab = (
+    df.groupby([cluster_col, label_col])
+      .size()
+      .reset_index(name="count")
+      .sort_values([cluster_col, "count"], ascending=[True, False])
+)
+display(crosstab.head(50))
+
+# Most common label per cluster
+top_per_cluster = crosstab.loc[crosstab.groupby(cluster_col)["count"].idxmax()].reset_index(drop=True)
+print("\nMost common label per cluster:")
+display(top_per_cluster)
+
+# Percent share per cluster
+ct_share = (
+    crosstab
+    .join(crosstab.groupby(cluster_col)["count"].transform("sum").rename("cluster_total"))
+    .assign(share=lambda d: (d["count"] / d["cluster_total"]).round(3))
+    .sort_values([cluster_col, "share"], ascending=[True, False])
+)
+display(ct_share.head(50))
+```
+```{python}
+# KMeans Cluster Visualization with Top Job Titles
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+# --- SCATTERPLOT OF KMEANS CLUSTERS ---
+
+plot_sample = df.loc[X.index].sample(n=5000, random_state=42) if len(X) > 5000 else df.loc[X.index]
+
+plt.figure(figsize=(10,6))
+sns.scatterplot(
+    data=plot_sample,
+    x='SALARY',
+    y='MIN_YEARS_EXPERIENCE',
+    hue='KMEANS_CLUSTER',
+    palette='tab10'
+)
+plt.title('KMeans Clusters by Salary and Min Years Experience')
+plt.xlabel('Salary')
+plt.ylabel('Minimum Years Experience')
+plt.legend(title='Cluster')
+plt.tight_layout()
+plt.show()
+out_path = "figures/KMeans_Clusters_by_Salary_Min_Years.png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+
+# --- TOP 5 JOB TITLES PER CLUSTER ---
+
+print("Top 5 Job Titles for Each Cluster:\n")
+for cluster in sorted(df['KMEANS_CLUSTER'].dropna().unique()):
+    print(f"\nCluster {int(cluster)}:")
+    print(df[df['KMEANS_CLUSTER'] == cluster]['TITLE_CLEAN'].value_counts().head(5))
+```
+![KMeans Clusters by Salary and Min Years Experience](figures/KMeans_Clusters_by_Salary_Min_Years.png)
+
+
+```{python}
+# --- Bar chart for the top 5 titles in Cluster 0 (change cluster_num as needed) ---
+cluster_num = 0
+top_titles = df[df['KMEANS_CLUSTER'] == cluster_num]['TITLE_CLEAN'].value_counts().head(5)
+
+plt.figure(figsize=(8, 7))
+bars = top_titles.plot(kind='bar', color='skyblue')
+plt.title(f'Top 5 Job Titles in Cluster {cluster_num}')
+plt.xlabel('Job Title')
+plt.ylabel('Count')
+plt.xticks(rotation=45, ha='right') 
+out_path = "figures/Top_5_Job_Titles_in_Cluster.png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+
+# Add the counts on top of the bars
+for idx, value in enumerate(top_titles.values):
+    plt.text(idx, value + max(top_titles.values)*0.01, str(value), ha='center', va='bottom', fontweight='bold')
+
+plt.tight_layout()
+plt.show()
+```
+![Top 5 Job Titles in Cluster 0](figures/Top_5_Job_Titles_in_Cluster.png)
+
+### K-Means Clustering (Salary × Minimum Experience)
+Clustering on salary and minimum experience produced three clear market segments:
+
+- Entry-level / lower salary
+- Mid-career / moderate salary
+- Senior specialist / high salary
+
+This segmentation aligns with career ladders and confirms the broad, positive relationship between experience and compensation.
+
+**Business relevance**
+
+- **Job seekers**: Use cluster patterns to target industries/roles occupying higher-pay segments and to plan upskilling.
+- **Employers**: Map openings to cluster ranges to calibrate pay bands against the external market and reduce attrition risk.
+
+```{python}
+# Cross-tab clusters by industry to interpret groupings
+crosstab = pd.crosstab(
+    df.loc[X.index, 'KMEANS_CLUSTER'],
+    df.loc[X.index, 'NAICS_2022_6_NAME']
+)
+crosstab
+```
+
+## Regression – Predicting Salary
+We chose Random Forest over Linear Regression because the relationship between experience and salary is non-linear, and the model captures complex interactions more effectively.
+
+The goal of this model is to predict job posting salary using experience and employment type features. The model uses an 80/20 train–test split and evaluates performance using RMSE and R² metrics.
+
+```{python}
+# Feature Selection and Data Preparation
+
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+# Use minimum years of experience, employment type (or closest available), and employment type as features
+
+features = ['MIN_YEARS_EXPERIENCE', 'REMOTE_TYPE_NAME']
+
+# One-hot encode employment type
+df_encoded = pd.get_dummies(df, columns=['REMOTE_TYPE_NAME'], drop_first=True)
+
+X = df_encoded[[col for col in df_encoded.columns if col in features or col.startswith('REMOTE_TYPE_NAME_')]]
+y = df_encoded['SALARY']
+
+X = X.dropna()
+y = y.loc[X.index]
+
+# Train/test split (70/30)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+```
+```{python}
+# Random Forest Regression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
+import numpy as np
+
+# Drop rows where y (salary) is missing
+mask = ~y_train.isna()
+X_train_filtered = X_train.loc[mask]
+y_train_filtered = y_train.loc[mask]
+
+mask_test = ~y_test.isna()
+X_test_filtered = X_test.loc[mask_test]
+y_test_filtered = y_test.loc[mask_test]
+
+# Train a random forest regression model to predict salary
+rf = RandomForestRegressor(n_estimators=100, random_state=42)
+rf.fit(X_train_filtered, y_train_filtered)
+
+# Predict salaries for the test set
+y_pred = rf.predict(X_test_filtered)
+
+# Calculate RMSE (Root Mean Squared Error) and R² (coefficient of determination)
+mse = mean_squared_error(y_test_filtered, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test_filtered, y_pred)
+
+print(f'Root Mean Squared Error (RMSE): {rmse:.2f}')
+print(f'R² Score: {r2:.3f}')
+```
+
+### Regression Results and Interpretation
+We modeled salary using Minimum Years of Experience (MIN_YEARS_EXPERIENCE) and Remote Type (REMOTE_TYPE_NAME). We excluded MAX_YEARS_EXPERIENCE (>85% missing) to protect statistical integrity; this reduced sample size but improved reliability.
+
+**Model performance**
+
+**RMSE**: 34,744.38
+**R²**: 0.336
+
+**What this means**
+An R² of 0.336 indicates experience and remote status explain a meaningful, but incomplete share of salary variation. That’s consistent with cross-industry labor data, where compensation is also driven by occupation, industry, location, and scarce technical capabilities.
+
+**Business relevance**
+- **For job seekers**: Experience contributes to higher earnings, but targeted specialization (e.g., analytics, cloud, data engineering) and industry selection are decisive for larger pay jumps.
+- **For employers**: Pricing talent solely by tenure can misalign offers in high-skill roles. Clear remote/on-site definitions in postings improve candidate signal and reduce noise in market benchmarking.
+
+**Outliers to review**
+A small number of postings show very high pay at low experience with unspecified remote type. These likely reflect specialized roles or incomplete records. In practice, validate or isolate these cases before setting salary bands or training production models.
+
+```{python}
+# Visual: Predicted vs. Actual Salary
+import matplotlib.pyplot as plt
+import pandas as pd
+
+y_actual = y_test_filtered if 'y_test_filtered' in globals() else y_test
+y_pred_series = pd.Series(y_pred, index=y_actual.index[:len(y_pred)])
+
+plt.figure(figsize=(8, 6))
+plt.scatter(y_actual, y_pred_series, alpha=0.5)
+plt.xlabel("Actual Salary")
+plt.ylabel("Predicted Salary")
+plt.title("Predicted vs. Actual Salary (Random Forest Regression)")
+lo, hi = float(y_actual.min()), float(y_actual.max())
+plt.plot([lo, hi], [lo, hi], 'r--', label="Perfect Prediction")
+plt.legend()
+plt.tight_layout()
+plt.show()
+out_path = "figures/Predicted_vs_Actual_RF_Regression.png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+```
+![Predicted vs. Actual Salary (Random Forest Regression)](figures/Predicted_vs_Actual_RF_Regression.png)
+
+```{python}
+# Feature importance: shows which variables most influence salary prediction
+importances = rf.feature_importances_
+feature_names = X.columns
+
+feat_imp = sorted(zip(feature_names, importances), key=lambda x: x[1], reverse=True)
+print("Top 5 features influencing salary prediction:")
+for name, imp in feat_imp[:5]:
+    print(f"{name}: {imp:.3f}")
+```
+
+```{python}
+# Visual: Feature Importance Bar Chart
+import pandas as pd
+
+feat_imp_df = pd.DataFrame({'feature': feature_names, 'importance': importances})
+feat_imp_df = feat_imp_df.sort_values('importance', ascending=False).head(5)
+
+plt.figure(figsize=(8, 5))
+plt.barh(feat_imp_df['feature'], feat_imp_df['importance'], color='skyblue')
+plt.xlabel('Importance')
+plt.title('Top 5 Feature Importances (Random Forest Regression)')
+plt.gca().invert_yaxis()
+plt.tight_layout()
+plt.show()
+out_path = "figures/Top_5_Feature_Importances_RF_Regression).png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+```
+![Top 5 Feature Importances (Random Forest Regression)](figures/Top_5_Feature_Importances_RF_Regression.png)
+
+```{python}
+# Calculate absolute prediction error for each job
+import pandas as pd
+y_actual = y_test_filtered if 'y_test_filtered' in globals() else y_test
+y_pred_series = pd.Series(y_pred, index=y_actual.index[:len(y_pred)])
+errors = (y_actual - y_pred_series).abs()
+outlier_indices = errors.nlargest(5).index
+
+# Show the original job posting rows for these outliers
+cols = ['SALARY', 'MIN_YEARS_EXPERIENCE', 'MAX_YEARS_EXPERIENCE', 'EMPLOYMENT_TYPE_NAME', 'REMOTE_TYPE_NAME']
+cols = [c for c in cols if c in df.columns]
+print(df.loc[outlier_indices, cols])
+```
+
+```{python}
+# Visual: Highlight Outliers in Predicted vs. Actual Salary
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+emp_col = next((c for c in ["EMPLOYMENT_TYPE_NAME","REMOTE_TYPE_NAME","STATE_NAME","MSA_NAME"] if c in df.columns), None)
+
+subset_cols = ["SALARY","MIN_YEARS_EXPERIENCE"] + ([emp_col] if emp_col else [])
+subset = df.loc[outlier_indices, subset_cols].copy()
+
+def _fmt_sal(x): 
+    return f"${int(x):,}" if pd.notna(x) else "N/A"
+
+def _fmt_exp(x): 
+    return f"{int(x)}yr min" if pd.notna(x) else "n/a"
+
+def _fmt_emp(x): 
+    return str(x) if pd.notna(x) else "n/a"
+
+if emp_col:
+    labels = [
+        f"{_fmt_sal(s)}\n{_fmt_exp(m)}\n{_fmt_emp(e)}"
+        for s, m, e in zip(subset["SALARY"], subset["MIN_YEARS_EXPERIENCE"], subset[emp_col])
+    ]
+else:
+    labels = [
+        f"{_fmt_sal(s)}\n{_fmt_exp(m)}"
+        for s, m in zip(subset["SALARY"], subset["MIN_YEARS_EXPERIENCE"])
+    ]
+
+plt.figure(figsize=(10, 5))
+plt.bar(labels, subset["SALARY"].fillna(0))
+plt.ylabel("Actual Salary")
+plt.title("Top 5 Outlier Job Salaries")
+plt.tight_layout()
+plt.show()
+out_path = "figures/Top_5_Outlier_Job_Salaries).png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+```
+![Top 5 Outlier Job Salaries](figures/Top_5_Outlier_Job_Salaries.png)
+
+## Outlier Jobs and Market Signals
+The largest residuals include postings above $300,000 with only 1–5 years minimum experience, often missing a remote/on-site label. These cases point to specialized, high-impact roles where compensation is decoupled from tenure (e.g., advanced analytics, cloud/platform, niche leadership).
+
+**Business relevance**
+
+**Employers**: Standardize and QA high-pay, low-tenure postings, unclear fields and atypical mixes should be reviewed before publication.
+**Job seekers**: Outliers highlight skill paths where focused upskilling can command premium pay earlier in a career.
+
+## Classification – Predicting Remote vs On-Site Job
+```{python}
+# Classification: Predicting Remote vs On-Site Jobs
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import matplotlib.pyplot as plt
+
+# Prepare data
+emp_col = "EMPLOYMENT_TYPE_NAME" if "EMPLOYMENT_TYPE_NAME" in df.columns else ("STATE_NAME" if "STATE_NAME" in df.columns else ("MSA_NAME" if "MSA_NAME" in df.columns else None))
+if emp_col is not None:
+    clf_df = df[["MIN_YEARS_EXPERIENCE", emp_col, "REMOTE_TYPE_NAME"]].dropna().copy() # Removed MAX_YEARS_EXPERIENCE
+else:
+    clf_df = df[["MIN_YEARS_EXPERIENCE", "REMOTE_TYPE_NAME"]].dropna().copy() # Removed MAX_YEARS_EXPERIENCE
+clf_df["IS_REMOTE"] = clf_df["REMOTE_TYPE_NAME"].str.contains("Remote", case=False, na=False).astype(int)
+
+X = clf_df[["MIN_YEARS_EXPERIENCE", emp_col]].copy() if emp_col is not None else clf_df[["MIN_YEARS_EXPERIENCE"]].copy() # Removed MAX_YEARS_EXPERIENCE
+y = clf_df["IS_REMOTE"]
+
+# One-hot encode employment type
+if emp_col is not None:
+    preprocessor = ColumnTransformer([
+        ("cat", OneHotEncoder(handle_unknown="ignore"), [emp_col]),
+        ("num", "passthrough", ["MIN_YEARS_EXPERIENCE"]) # Removed MAX_YEARS_EXPERIENCE
+    ])
+else:
+    preprocessor = ColumnTransformer([
+        ("num", "passthrough", ["MIN_YEARS_EXPERIENCE"]) # Removed MAX_YEARS_EXPERIENCE
+    ])
+
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y)
+
+# Model
+clf = Pipeline([
+    ("prep", preprocessor),
+    ("model", LogisticRegression(max_iter=1000, class_weight='balanced'))
+])
+clf.fit(X_train, y_train)
+pred = clf.predict(X_test)
+
+# Metrics
+acc = accuracy_score(y_test, pred)
+f1 = f1_score(y_test, pred)
+print(f"Accuracy: {acc:.3f}, F1 Score: {f1:.3f}")
+
+# Confusion matrix
+ConfusionMatrixDisplay(confusion_matrix(y_test, pred)).plot(cmap="Blues")
+plt.title("Confusion Matrix — Remote vs On-Site Classification")
+plt.show()
+out_path = "figures/Confusion_Matrix_Remote_vs_On-Site.png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+```
+![Confusion Matrix — Remote vs On-Site Classification](figures/Confusion_Matrix_Remote_vs_On-Site.png)
+
+### Classification Results and Interpretation
+We trained a logistic regression to predict Remote vs On-Site using MIN_YEARS_EXPERIENCE plus an available categorical descriptor (e.g., employment type or state).
+
+**Performance**
+
+**Accuracy**: 0.622
+**F1 Score**: 0.327
+
+**What this means**
+The model distinguishes remote vs. on-site at a moderate level, consistent with the idea that remote status is policy/role-design driven, not primarily a function of required experience.
+
+**Business relevance**
+Employers: Remote flexibility can be offered across experience levels without materially distorting supply. If remote status is strategic, emphasize role/industry signals rather than tenure in postings.
+Job seekers: Remote options exist from entry to senior levels, broadening geographic reach and negotiation leverage.
