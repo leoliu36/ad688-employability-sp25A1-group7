@@ -13,10 +13,10 @@ website:
         text: "Exploratory Data Analysis"
       - href: skill_gap_analysis.qmd/ipynb
         text: "Skill Gap Analysis"
-      - href: ml_methods.qmd/ipynb
-        text: "ML Methods"
-      - href: nlp_methods.qmd/ipynb
-        text: "NLP Methods"
+      - href: final_analytics.qmd/ipynb
+        text: "Final Analytics"
+      - href: conclusion.qmd/ipynb
+        text: "conclusion"
   page-navigation: true
 
 format:
