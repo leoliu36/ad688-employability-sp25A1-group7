@@ -351,3 +351,6 @@ plt.savefig(out_path, dpi=150)
 ![Salary Density: AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
 
 **Key Insights**
+The salary comparison between AI and non-AI job postings shows a wage premium associated with roles that require AI-related skill sets. Analyzing 5273 AI roles and 15949 non-AI roles, the box plot in in figure X shows that AI roles have a higher median salary ($115,000-$120,000) than non-AI roles ($105,000-$110,000). In terms of IQRs - both Q1 and Q3 for AI roles is positioned higher in comparison to non-AI roles. This suggests that roles that require expertise in AI-related skills generally pay better than the rest of the job market. 
+
+The KDE plot in Figure X shows that AI roles have a steep upward slope from $20,000-$80,000 with job postings mostly clustering between $80,000-$120,000. This pattern likely means that there are less entry-level roles in AI and most roles are concentrated in the mid-salary range. This suggests that while there aren’t many jobs that reflect entry level salaries, AI-related job postings reflect a higher salary floor driven by a higher barrier of entry. 
