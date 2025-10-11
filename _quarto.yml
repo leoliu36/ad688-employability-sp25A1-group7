@@ -17,6 +17,7 @@ website:
         text: "Final Analytics"
       - href: conclusion.qmd/ipynb
         text: "conclusion"
+        
   page-navigation: true
 
 format:

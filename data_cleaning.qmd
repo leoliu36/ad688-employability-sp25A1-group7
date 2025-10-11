@@ -2,6 +2,9 @@
 title: "Data Cleaning & Exploration"
 execute:
   kernel: ad688-venv
+  echo: false     
+  warning: false  
+  message: false   
 author:   
   - name: Angelina McKim
     affiliations:
@@ -18,11 +21,7 @@ author:
 date: 2025-09-10
 date-modified: 2025-10-10
 bibliography: references.bib
-csl: csl/econometrica.csl
-execute:
-  echo: false     
-  warning: false  
-  message: false   
+csl: csl/econometrica.csl 
 format: 
   html:
     toc: true
