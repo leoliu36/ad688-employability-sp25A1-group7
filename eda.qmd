@@ -1,40 +1,13 @@
----
-title: "Exploratory Data Analysis"
-subtitle: "Understanding Job Market Trends in 2024"
-execute:
-  kernel: ad688-venv
-  echo: false     
-  warning: false  
-  message: false   
-author:   
-  - name: Angelina McKim
-    affiliations:
-      - id: bu
-        name: Boston University
-        city: Boston
-        state: MA
-  - name: Devin Blanchard
-    affiliations:
-      - ref: bu
-  - name: Leo Liu
-    affiliations:
-      - ref: bu
-date: 2025-09-10
-date-modified: 2025-10-10
-bibliography: references.bib
-csl: csl/econometrica.csl
-format: 
-  html:
-    toc: true
-    number-sections: true
-    df-print: paged
----
+# EDA Overview
+This section explores job market trends and the restructuring of compensation through a series of visualizations. Each exploratory data analysis (EDA) was chosen to reveal specific patterns in compensation to highlight the impact of AI and remote work.
+{{< include _setup.qmd >}}
+```{python}
+import pandas as pd
 
-# Overview
-This section explores job market trends and the restructuring of compensation through a series of visualizations. Each exploratory data analysis (EDA) was chosen to reveal specific patterns in compensation, regional disparities, and the impact of AI and remote work.
-
+# Load pre-cleaned dataset
+df = pd.read_csv("data/cleaned_job_postings.csv")
+```
 ## Salary by Remote Work Type
-
 The purpose of this EDA is to visually compare not just the average pay, but also the range and consistency of salaries across different work arrangements. This visualization could reveal that remote roles have a wider salary range, indicating that companies are paying a premium for top talent regardless of location.
 
 ```{python}
@@ -56,18 +29,17 @@ fig1 = px.box(
     color="REMOTE_TYPE_NAME",                         
     color_discrete_sequence=px.colors.qualitative.Set2
 )
-fig1.show()
+#fig1.show()
 fig1.write_image("figures/salary_by_work_arrangement.png", scale=2)
 ```
 
-![Salary Distribution by Work Arrangement](figures/salary_by_work_arrangement.png)
+![Figure 2: Salary Distribution by Work Arrangement](figures/salary_by_work_arrangement.png)
 
 **Key Insights:**
 The median salaries across all work arrangements are similar, clustering around $115,000. However, both Remote and Hybrid Remote roles exhibit a much wider salary range and more high-paying outlier positions, with some remote roles exceeding $350,000. This suggests that while typical pay is comparable, remote-friendly positions offer significantly greater potential for top-end compensation.
 
 
 ## Top Skills vs. Average Salary
-
 The purpose of this EDA is to identify which specific skills are most financially valuable in the current job market, connecting AI-related skills to compensation. This could reveal that skills related to AI/ML platforms command a significantly higher salary, even if they aren't the most frequently requested skills overall.
 
 ```{python}
@@ -98,26 +70,24 @@ fig2 = px.bar(
     avg_salary_for_top_skills,
     x='SKILLS_LIST',
     y="SALARY",
-    title="Average Salary for Top 10 Skills In Demand",
+    title="Average Salary for Top 10 Skills",
     labels={'SKILLS_LIST': "Skill", "SALARY": "Average Annual Salary ($)"},
     width=800,
     height=600,                       
     color_discrete_sequence=px.colors.qualitative.Set2,
     opacity=0.7
 )
-fig2.show()
+#fig2.show()
 fig2.write_image("figures/topskills_salary.png", scale=2)
 ```
 
-![Average Salary for Top 10 Skills In Demand](figures/topskills_salary.png)
+![Figure 3: Average Salary for Top 10 Skills most in Demand](figures/topskills_salary.png)
 
 **Key Insights:**
 Among the 10 most in-demand skills, Data Analysis commands the highest average salary at over $120,000. While compensation for most top skills is competitive, technical skills like Data Analysis and Business Process show a slight financial advantage over the lowest-paid skill in this group, Management, which averages approximately $110,000.
 
 
 ## Salary Trends by Top Industries
-
-**Why this visualization was chosen:**
 The purpose of this EDA is to explore how compensation varies across economic sectors and identify which industries offer the highest earning potential. Using the 2024 job posting data and grouping by industry (NAICS 2022 Level-6 codes), this analysis aims to compare the median salary and salary distribution across highest-paying industries within the job market. 
 
 ```{python}
@@ -188,10 +158,11 @@ plt.xticks(fontsize=9)
 plt.tight_layout()
 out_path = "figures/median_salary_by_industry.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight")
-plt.show()
+#plt.show()
+plt.close()
 ```
 
-![Median Salary by Industry](figures/median_salary_by_industry.png)
+![Figure 4: Median Salary by Industry](figures/median_salary_by_industry.png)
 
 ```{python}
 ## Plot: Analyze Salary Distribution by Industry (Seaborn)
@@ -233,24 +204,21 @@ plt.tight_layout()
 # Save and display the figure
 out_path = "figures/salary_distribution_by_industry.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight")
-plt.show()
+#plt.show()
+plt.close()
 ```
 
-![Salary Distribution by Industry](figures/salary_distribution_by_industry.png)
+![Figure 5: Salary Distribution by Industry](figures/salary_distribution_by_industry.png)
 
-**Key Insights**
+**Key Insights:**
+The analysis of median salary across industries shows that Web Search Portals and All Other Information Services leads with the highest median pay, exceeding $160,000. This is likely due to the increasing demand on specialized digital infrastructure and AI-driven information services. The box plot shows a wide interquartile range (IQR), indicating a significant pay gap between entry-level and more senior/specialized roles in the industry. This trend is also observed in the Computing Infrastructure Providers, Data Processing, Web Hosting, and Related Services category, which is indicative of the range of roles in demand for those industries. Although other technology and information industries such as Software Publishers and Computer System Design Services reported slightly lower median salaries compared to the top-paying sectors, the large amount of high-end outlier values suggests that these industries still offer high-earning potential for more senior/specialized roles with most positions clustering around mid-range salaries. 
 
-The analysis of median salary across industries shows that Web Search Portals and All Other Information Services leads with the highest median pay, exceeding $160,000. This is likely due to the increasing demand on specialized digital infrastructure and AI-driven information services. The box plot in Figure X shows a wide interquartile range (IQR), indicating a significant pay gap between entry-level and more senior/specialized roles in the industry. This trend is also observed in the Computing Infrastructure Providers, Data Processing, Web Hosting, and Related Services category, which is indicative of the range of roles in demand for those industries. Although other technology and information industries such as Software Publishers and Computer System Design Services reported slightly lower median salaries compared to the top-paying sectors, the large amount of high-end outlier values suggests that these industries still offer high-earning potential for more senior/specialized roles with most positions clustering around mid-range salaries. 
-
-Notably, non-technology/information-related sectors such as All Other Miscellaneous Retailers also reported high median salaries, around $160,000. The broad definition of these sectors likely encompasses various types of retail firms that may include roles and platforms beyond the traditional frontline retail and sales roles. Another sector in which compensation data may be inflated by data categorization is Offices of Certified Public Accountants (CPAs), which reported a median salary of around $145,000. Based on the salary distribution highlighted in Figure X, the positively-skewed distribution indicates that while most CPA roles earn around the median, some specialized roles are earning substantially more. This aligns with how CPA firms are typically structured, where a small number of senior partners and high-level executives driving the high-end outliers. 
+Notably, non-technology/information-related sectors such as All Other Miscellaneous Retailers also reported high median salaries, around $160,000. The broad definition of these sectors likely encompasses various types of retail firms that may include roles and platforms beyond the traditional frontline retail and sales roles. Another sector in which compensation data may be inflated by data categorization is Offices of Certified Public Accountants (CPAs), which reported a median salary of around $145,000. Based on the salary distribution highlighted in the box plot, the positively-skewed distribution indicates that while most CPA roles earn around the median, some specialized roles are earning substantially more. This aligns with how CPA firms are typically structured, where a small number of senior partners and high-level executives driving the high-end outliers. 
 
 These findings show that companies in technology, professional services, and consulting industries offer the highest median salaries and exhibit a larger dispersion in compensation, which is reflective of a more diverse workforce structure that may include entry level, technical/specialist, and senior leadership roles. On the other hand, administrative and support service sectors demonstrate lower median but tighter distributions in salary, demonstrating a more standardized workforce and wage structure in comparison. 
 
 
 ## AI vs. Non-AI Salary Comparison 
-
-**Why this visualization was chosen:**
-
 The motivation for this analysis was to investigate how specialization in AI-related skills influence salary in today's job market. This analysis differentiates AI vs. non-AI jobs by identifying AI-related keywords such as machine learning, data science, computer vision, and natural language processing in job postings. We then compare the median and distribution of salaries between the two groups to determine whether AI roles command higher compensation than non-AI roles. 
 
 ```{python}
@@ -312,12 +280,13 @@ plt.title("Salary Distribution: AI vs. Non-AI Jobs")
 plt.xlabel("Job Type", fontsize=9)
 plt.ylabel("Salary ($)", fontsize=9)
 plt.tight_layout()
-plt.show()
+#plt.show()
 out_path = "figures/AI_v_nonAI_salary_boxplot.png"
 plt.savefig(out_path, dpi=150)
+plt.close()
 ```
 
-![Salary Distribution: AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
+![Figure 6: Salary Distribution comparison between AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_boxplot.png)
 
 ```{python}
 import matplotlib.pyplot as plt
@@ -342,14 +311,15 @@ plt.title("Salary Density: AI vs. Non-AI Jobs")
 plt.xlabel("Salary ($)", fontsize=9)
 plt.ylabel("Density", fontsize=9)
 plt.tight_layout()
-plt.show()
+#plt.show()
 out_path = "figures/AI_v_nonAI_salary_KDE.png"
 plt.savefig(out_path, dpi=150)
+plt.close()
 ```
 
-![Salary Density: AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
+![Figure 7: Salary Density comparison between AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
 
-**Key Insights**
-The salary comparison between AI and non-AI job postings shows a wage premium associated with roles that require AI-related skill sets. Analyzing 5273 AI roles and 15949 non-AI roles, the box plot in in figure X shows that AI roles have a higher median salary ($115,000-$120,000) than non-AI roles ($105,000-$110,000). In terms of IQRs - both Q1 and Q3 for AI roles is positioned higher in comparison to non-AI roles. This suggests that roles that require expertise in AI-related skills generally pay better than the rest of the job market. 
+**Key Insights:**
+The salary comparison between AI and non-AI job postings shows a wage premium associated with roles that require AI-related skill sets. Analyzing 5273 AI roles and 15949 non-AI roles, the box plot shows that AI roles have a higher median salary ($115,000-$120,000) than non-AI roles ($105,000-$110,000). In terms of IQRs - both Q1 and Q3 for AI roles is positioned higher in comparison to non-AI roles. This suggests that roles that require expertise in AI-related skills generally pay better than the rest of the job market. 
 
-The KDE plot in Figure X shows that AI roles have a steep upward slope from $20,000-$80,000 with job postings mostly clustering between $80,000-$120,000. This pattern likely means that there are less entry-level roles in AI and most roles are concentrated in the mid-salary range. This suggests that while there aren’t many jobs that reflect entry level salaries, AI-related job postings reflect a higher salary floor driven by a higher barrier of entry. 
+The KDE plot shows that AI roles have a steep upward slope from $20,000-$80,000 with job postings mostly clustering between $80,000-$120,000. This pattern likely means that there are less entry-level roles in AI and most roles are concentrated in the mid-salary range. This suggests that while there aren’t many jobs that reflect entry level salaries, AI-related job postings reflect a higher salary floor driven by a higher barrier of entry. 

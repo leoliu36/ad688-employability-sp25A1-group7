@@ -1,0 +1,32 @@
+```{python}
+# _setup.qmd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.io as pio
+import plotly.graph_objects as go
+import plotly.express as px
+
+# Define a consistent theme
+custom_theme = go.layout.Template(
+    layout=go.Layout(
+        font=dict(family="Arial", size=12, color="#000000"),
+        title=dict(font=dict(size=16, family="Arial")),
+        paper_bgcolor="white",
+        plot_bgcolor="white",
+        colorway=px.colors.qualitative.Set2
+    )
+)
+pio.templates["custom_white"] = custom_theme
+pio.templates.default = "custom_white"
+
+plt.style.use("seaborn-v0_8-whitegrid")
+plt.rcParams.update({
+    "font.family": "Arial",
+    "font.size": 7,
+    "axes.titlesize": 11,
+    "axes.labelsize": 9,
+    "figure.dpi": 120,
+    "savefig.dpi": 150
+})
+sns.set_palette("Set2")
+```

@@ -1,7 +1,7 @@
 ---
 title: "Job Market Research 2024"
 subtitle: "Final Report"
-author:   
+author:
   - name: Angelina McKim
     affiliations:
       - id: bu
@@ -14,20 +14,21 @@ author:
   - name: Leo Liu
     affiliations:
       - ref: bu
-date: 2025-10-10
-date-modified: 2025-10-10
-date-format: long
+date: "2025-10-10"
 format:
-  docx: default
+  docx:
+    toc: true
+    number-sections: true
 bibliography: references.bib
 csl: csl/econometrica.csl
+execute:
+  echo: false
+  warning: false
+  message: false
 ---
+
 {{< include introduction.qmd >}}
-
 {{< include data_cleaning.qmd >}}
-
-{{< embed skill_gap_analysis.qmd >}}
-
+{{< include skill_gap_analysis.qmd >}}
 {{< include final_analytics.qmd >}}
-
 {{< include conclusion.qmd >}}

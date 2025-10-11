@@ -1,34 +1,4 @@
----
-title: "Introduction"
-author:   
-  - name: Angelina McKim
-    affiliations:
-      - id: bu
-        name: Boston University
-        city: Boston
-        state: MA
-  - name: Devin Blanchard
-    affiliations:
-      - ref: bu
-  - name: Leo Liu
-    affiliations:
-      - ref: bu
-date: 2025-09-10
-date-modified: 2025-10-10
-bibliography: references.bib
-csl: csl/econometrica.csl
-execute:
-  echo: false     
-  warning: false  
-  message: false   
-format: 
-  html:
-    toc: true
-    number-sections: true
-    df-print: paged
----
-
-## Introduction & Research Rationale
+# Introduction & Research Rationale
 
 The job market in 2024 is undergoing a major transformation with the rise of artificial intelligence and widespread acceptance of long-distance/remote work. This analysis will examine the following key topics to uncover the factors that influence salary trends:
 
@@ -44,10 +14,8 @@ High-paying jobs are increasingly concentrated in specific tech-driven sectors a
   
 Remote roles now often offer comparable or even higher compensation due to talent shortages and broader applicant pools. Industries like tech and healthcare are setting new standards, while others struggle to keep pace.
 
-## Literature Review Summary
+# Literature Review Summary
 
 The rise of Artificial Intelligence (AI) has reshaped the job market across the US, with demand for AI-related skills increasing dramatically. According to a study by PWC, jobs that require AI specialist skills are growing 3.5 times faster than all other job markets, with skilled AI workers being paid up to 25% more in some sectors [@pwc2024]. However, this increase in compensation is not limited to workers specialized in AI. Non-AI roles that require complementary skills such as digital literacy, analytical thinking, and teamwork are also seeing a 5–10% wage increase [@makela2024]. According to US job vacancy data from 2018–2024, AI-related jobs are significantly more likely to include non-monetary benefits as part of the compensation package, including parental leave and remote working options [@stephany2025].
 
 Beyond the benefit of not having to commute and the ability to work from anywhere, long-distance and remote roles are often sought after by job seekers due to faster wage growth. In a study comparing the pay trends of remote versus in-office workers in the same occupation, remote workers experienced 4.4% faster annual wage growth, especially in professional and technical sectors [@pabilonia2025]. Furthermore, workers who transitioned into remote roles with the same employer saw up to 16 percentage points higher wage growth than their counterparts who remained local [@romem2024]. This demonstrates that switching into remote work can lead to significantly higher wage growth, even within the same company and/or job category.
-
-## References

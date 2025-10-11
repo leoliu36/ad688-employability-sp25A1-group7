@@ -1,33 +1,42 @@
 project:
   type: website
+  output-dir: _site
+  render:
+    - "*.qmd"
+    - "!ml_methods.qmd"
+    - "!data_analysis.ipynb"
 
 website:
   title: "Job Market Analysis 2024"
   navbar:
     left:
-      - href: introduction.qmd
-        text: "Introduction"
-      - href: data_cleaning.qmd/ipynb
-        text: "Data Cleaning & Exploration"
-      - href: eda.qmd/ipynb
-        text: "Exploratory Data Analysis"
-      - href: skill_gap_analysis.qmd/ipynb
-        text: "Skill Gap Analysis"
-      - href: final_analytics.qmd/ipynb
-        text: "Final Analytics"
-      - href: conclusion.qmd/ipynb
-        text: "conclusion"
-        
-  page-navigation: true
+      - text: "Introduction"
+        href: introduction.qmd
+      - text: "Data Cleaning & Exploration"
+        href: data_cleaning.qmd
+      - text: "Exploratory Data Analysis"
+        href: eda.qmd
+      - text: "Skill Gap Analysis"
+        href: skill_gap_analysis.qmd
+      - text: "Final Analytics"
+        href: final_analytics.qmd
+      - text: "Conclusion"
+        href: conclusion.qmd
 
 format:
   html:
     theme: default
     css: styles.css
     toc: true
+    page-navigation: true
+    number-sections: true
+    code-fold: true
 
 execute:
   echo: true
   eval: true
-  code-fold: true
+  warning: false
+  message: false
+  cache: false
+  freeze: auto
   python: .venv/bin/python

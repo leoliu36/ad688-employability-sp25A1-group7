@@ -1,37 +1,14 @@
----
-title: "Skill Gap Analysis"
-execute:
-  kernel: ad688-venv
-  echo: false     
-  warning: false  
-  message: false   
-author:   
-  - name: Angelina McKim
-    affiliations:
-      - id: bu
-        name: Boston University
-        city: Boston
-        state: MA
-  - name: Devin Blanchard
-    affiliations:
-      - ref: bu
-  - name: Leo Liu
-    affiliations:
-      - ref: bu
-date: 2025-09-10
-date-modified: 2025-10-10
-bibliography: references.bib
-csl: csl/econometrica.csl
-format: 
-  html:
-    toc: true
-    number-sections: true
-    df-print: paged
----
+# Skill Gap Analysis
 
 ## Internal Skills Assessment
 To evaluate the current technical skill set for each team member, each team member performed a self-rating for a set of core competencies for data analytics and data science, which included Python, SQL, Power BI, Tableau, Excel, Machine Learning, Natural Language Processing (NLP), Cloud Computing, and AWS. The assessment was made on a five-point scale, and the rating values were then compiled into a dataframe for further analysis. We then leveraged a Seaborn heatmap to identify where our strengths concentrated and pinpoint where the gaps existed. 
+{{< include _setup.qmd >}}
+```{python}
+import pandas as pd
 
+# Load pre-cleaned dataset
+df = pd.read_csv("data/cleaned_job_postings.csv")
+```
 ```{python}
 # Create list of relevant analytics skills and rate each member from 1-5
 import pandas as pd
@@ -61,16 +38,25 @@ import matplotlib.pyplot as plt
 plt.figure(figsize=(12, 8))
 sns.heatmap(df_skills, annot=True, cmap="coolwarm", linewidths=0.5)
 plt.title("Team Skill Levels Heatmap")
-plt.show()
+#plt.show()
+plt.close()
 ```
+![Figure 8: Team Skill Levels Heatmap](figures/Team_Skills_Heatmap.png)
+
+**Which skills should each member prioritize learning?**
+
+- **Angelina** – Strong in visualization tools (Power BI 5, Tableau 4, Excel 5). Next priorities: Cloud, AWS, Machine Learning, and NLP. These are high-demand in job postings (Cloud: 64k+, AWS: 10k+, ML/NLP combined: 23k+).  
+- **Devin** – Solid in Excel (5) and Tableau (3), but weakest in Python, ML, NLP, and AWS. Needs to raise Cloud as well.  
+- **Leo** – Stronger in Power BI (4) and Excel (4), but very low in ML, NLP, Cloud, and AWS. Should also build up Python and SQL to meet market demand (Python: 17k+, SQL: 43k+ mentions).  
 
 ## External Skills Assessment using Natural Language Processing techniques
 To identify the most in-demand skills in the analytics job market, we analyzed the job descriptions from the Lightcast dataset by leveraging Natural Language Processing (NLP) techniques to process the BODY column which contained detailed job descriptions. Below is a summary of the data preparation and extraction process:
-	•	Text normalization: To ensure consistency, job descriptions were converted to lowercase, Unicode-normalized format, and whitespaces were stripped. 
-	•	Tokenization: Numbers and punctuation were filtered out to ensure words can be captured and extracted properly.
-	•	Stopword removal: To further filter and concentrate only on meaningful technical words, common English stopwords were removed using Scikit-learn's built-in stopword list. 
-	•	Keyword filtering: A predefined list of relevant analytics skills (e.g., Python, SQL, AWS, Tableau, Excel, Pandas, Spark, Machine Learning, NLP, Cloud Computing) was used to identify and count occurrences within the job descriptions.
-	•	Frequency analysis: Using Python's Counter() function, we tallied the frequency of each skill keyword and visualized in a column chart to understand their significance in the job market. 
+
+- **Text normalization:** To ensure consistency, job descriptions were converted to lowercase, Unicode-normalized format, and whitespaces were stripped. 
+- **Tokenization:** Numbers and punctuation were filtered out to ensure words can be captured and extracted properly.
+- **Stopword removal:** To further filter and concentrate only on meaningful technical words, common English stopwords were removed using Scikit-learn's built-in stopword list. 
+- **Keyword filtering:** A predefined list of relevant analytics skills (e.g., Python, SQL, AWS, Tableau, Excel, Pandas, Spark, Machine Learning, NLP, Cloud Computing) was used to identify and count occurrences within the job descriptions.
+- **Frequency analysis:** Using Python's Counter() function, we tallied the frequency of each skill keyword and visualized in a column chart to understand their significance in the job market. 
 
 ```{python}
 ## Extract most in-demand skills from JD (optimized)
@@ -141,28 +127,22 @@ if skills_filtered:
 
     out_path = "figures/jd_top_skills.png"
     plt.savefig(out_path, dpi=150)
-    plt.show()
+    #plt.show()
+    plt.close()
     #print(f"[Saved chart] {out_path}")
 
 ```
-![Most In-demand skills from Job Descriptions](figures/jd_top_skills.png)
+![Figure 9: Most In-demand skills from Job Descriptions](figures/jd_top_skills.png)
 
 ## Propose an Improvement Plan
 According to our analysis, job postings show high demand for Cloud, SQL, Python, ML, and AWS. Our team is strong in visualization (Excel, Power BI, Tableau) but weaker in Cloud, ML, and NLP. This plan aligns our learning with market needs, provides specific resources, and ensures collaboration strategies so the whole team can close the gap together.
 
-**Which skills should each member prioritize learning?**
-
-- **Angelina** – Strong in visualization tools (Power BI 5, Tableau 4, Excel 5). Next priorities: Cloud, AWS, Machine Learning, and NLP. These are high-demand in job postings (Cloud: 64k+, AWS: 10k+, ML/NLP combined: 23k+).  
-- **Devin** – Solid in Excel (5) and Tableau (3), but weakest in Python, ML, NLP, and AWS. Needs to raise Cloud as well.  
-- **Leo** – Stronger in Power BI (4) and Excel (4), but very low in ML, NLP, Cloud, and AWS. Should also build up Python and SQL to meet market demand (Python: 17k+, SQL: 43k+ mentions).  
-
-
 **What courses or resources can help?**
 
-- Cloud & AWS – free cloud provider tutorials, AWS Educate, and cloud labs for hands-on practice.  
-- Machine Learning & NLP – scikit-learn tutorials, Kaggle competitions, and university modules on ML/NLP.  
-- Python & SQL – interactive platforms (Jupyter notebooks, LeetCode SQL), and official documentation.  
-- Docker & Spark – short online workshops, Spark quickstarts, and Docker “getting started” labs.  
+- **Cloud & AWS** – free cloud provider tutorials, AWS Educate, and cloud labs for hands-on practice.  
+- **Machine Learning & NLP** – scikit-learn tutorials, Kaggle competitions, and university modules on ML/NLP.  
+- **Python & SQL** – interactive platforms (Jupyter notebooks, LeetCode SQL), and official documentation.  
+- **Docker & Spark** – short online workshops, Spark quickstarts, and Docker “getting started” labs.  
 
 
 **How can the team collaborate to bridge skill gaps?**
@@ -170,7 +150,7 @@ According to our analysis, job postings show high demand for Cloud, SQL, Python,
 - **Role rotation:** assign rotating leads (“cloud lead,” “ML/NLP lead,” “Python/SQL lead”) for mini-projects so each teammate practices outside their strengths.  
 - **Lightning talks:** weekly 15-minute sessions where one teammate teaches a concept or tool they just learned.  
 - **Pair programming:** match stronger members (for example, Angelina for visualization) with weaker ones (for example, Devin on Python) to share knowledge in real time.  
-- Shared resources: maintain a team wiki with reusable queries, cloud setup notes, and code snippets.  
+- **Shared resources:** maintain a team wiki with reusable queries, cloud setup notes, and code snippets.  
 
 
 

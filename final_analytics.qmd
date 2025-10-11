@@ -1,43 +1,19 @@
----
-title: "Exploratory Data Analysis"
-subtitle: "Understanding Job Market Trends in 2024"
-execute:
-  kernel: ad688-venv
-  echo: false     
-  warning: false  
-  message: false   
-author:   
-  - name: Angelina McKim
-    affiliations:
-      - id: bu
-        name: Boston University
-        city: Boston
-        state: MA
-  - name: Devin Blanchard
-    affiliations:
-      - ref: bu
-  - name: Leo Liu
-    affiliations:
-      - ref: bu
-date: 2025-09-10
-date-modified: 2025-10-10
-bibliography: references.bib
-csl: csl/econometrica.csl
-format: 
-  html:
-    toc: true
-    number-sections: true
-    df-print: paged
----
-
 # Regression, Classification, and Topic Insights
 
 ## KMeans Clustering Analysis
 We performed KMeans clustering on job postings using core features (salary, minimum and maximum years of experience). This analysis seeks to segment jobs into groups with similar compensation and experience profiles, and to interpret these clusters using industry categories (NAICS).
 
 ### Fit KMeans and Assign Clusters - Data Prep
-We use KMeans clustering to segment jobs into five groups, using standardized salary and experience as inputs. Each posting is assigned to a cluster.
+We used KMeans clustering to segment jobs into five groups, using standardized salary and experience as inputs. Each posting is assigned to a cluster.
 
+![Figure 10: KMeans Clusters by Salary and Min Years Experience](figures/KMeans_Cluster.png)
+{{< include _setup.qmd >}}
+```{python}
+import pandas as pd
+
+# Load pre-cleaned dataset
+df = pd.read_csv("data/cleaned_job_postings.csv")
+```
 ```{python}
 from sklearn.preprocessing import StandardScaler
 
@@ -48,9 +24,7 @@ X = df[cluster_features].dropna()
 # Standardize features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
-```
 
-```{python}
 from sklearn.cluster import KMeans
 
 # Fit KMeans model
@@ -60,9 +34,8 @@ clusters = kmeans.fit_predict(X_scaled)
 
 # Add cluster labels to DataFrame
 df.loc[X.index, 'KMEANS_CLUSTER'] = clusters
-```
 
-```{python}
+
 # === Create a label column from the trained KMeans model ===
 try:
     df["kmeans_labels"] = pd.NA
@@ -74,9 +47,8 @@ except AttributeError:
 
 print("KMeans labels column ready:", "kmeans_labels" in df.columns)
 print("Unique clusters:", df["kmeans_labels"].nunique())
-```
 
-```{python}
+
 # === KMeans Cluster Reference Label Analysis ===
 cluster_col = "kmeans_labels"        
 label_col   = "NAICS_2022_6_NAME"    # required 'reference label' for interpretation
@@ -87,12 +59,12 @@ crosstab = (
       .reset_index(name="count")
       .sort_values([cluster_col, "count"], ascending=[True, False])
 )
-display(crosstab.head(50))
+#display(crosstab.head(50))
 
 # Most common label per cluster
 top_per_cluster = crosstab.loc[crosstab.groupby(cluster_col)["count"].idxmax()].reset_index(drop=True)
-print("\nMost common label per cluster:")
-display(top_per_cluster)
+#print("\nMost common label per cluster:")
+#display(top_per_cluster)
 
 # Percent share per cluster
 ct_share = (
@@ -101,9 +73,9 @@ ct_share = (
     .assign(share=lambda d: (d["count"] / d["cluster_total"]).round(3))
     .sort_values([cluster_col, "share"], ascending=[True, False])
 )
-display(ct_share.head(50))
-```
-```{python}
+#display(ct_share.head(50))
+
+
 # KMeans Cluster Visualization with Top Job Titles
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -126,9 +98,10 @@ plt.xlabel('Salary')
 plt.ylabel('Minimum Years Experience')
 plt.legend(title='Cluster')
 plt.tight_layout()
-plt.show()
-out_path = "figures/KMeans_Clusters_by_Salary_Min_Years.png"
+out_path = "figures/KMeans_Cluster.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight")
+#plt.show()
+plt.close()
 
 # --- TOP 5 JOB TITLES PER CLUSTER ---
 
@@ -137,33 +110,7 @@ for cluster in sorted(df['KMEANS_CLUSTER'].dropna().unique()):
     print(f"\nCluster {int(cluster)}:")
     print(df[df['KMEANS_CLUSTER'] == cluster]['TITLE_CLEAN'].value_counts().head(5))
 ```
-![KMeans Clusters by Salary and Min Years Experience](figures/KMeans_Clusters_by_Salary_Min_Years.png)
-
-
-```{python}
-# --- Bar chart for the top 5 titles in Cluster 0 (change cluster_num as needed) ---
-cluster_num = 0
-top_titles = df[df['KMEANS_CLUSTER'] == cluster_num]['TITLE_CLEAN'].value_counts().head(5)
-
-plt.figure(figsize=(8, 7))
-bars = top_titles.plot(kind='bar', color='skyblue')
-plt.title(f'Top 5 Job Titles in Cluster {cluster_num}')
-plt.xlabel('Job Title')
-plt.ylabel('Count')
-plt.xticks(rotation=45, ha='right') 
-out_path = "figures/Top_5_Job_Titles_in_Cluster.png"
-plt.savefig(out_path, dpi=150, bbox_inches="tight")
-
-# Add the counts on top of the bars
-for idx, value in enumerate(top_titles.values):
-    plt.text(idx, value + max(top_titles.values)*0.01, str(value), ha='center', va='bottom', fontweight='bold')
-
-plt.tight_layout()
-plt.show()
-```
-![Top 5 Job Titles in Cluster 0](figures/Top_5_Job_Titles_in_Cluster.png)
-
-### K-Means Clustering (Salary × Minimum Experience)
+### K-Means Clustering Summary
 Clustering on salary and minimum experience produced three clear market segments:
 
 - Entry-level / lower salary
@@ -177,13 +124,37 @@ This segmentation aligns with career ladders and confirms the broad, positive re
 - **Job seekers**: Use cluster patterns to target industries/roles occupying higher-pay segments and to plan upskilling.
 - **Employers**: Map openings to cluster ranges to calibrate pay bands against the external market and reduce attrition risk.
 
+<!-- ```{python}
+# --- Bar chart for the top 5 titles in Cluster 0 (change cluster_num as needed) ---
+cluster_num = 0
+top_titles = df[df['KMEANS_CLUSTER'] == cluster_num]['TITLE_CLEAN'].value_counts().head(5)
+
+plt.figure(figsize=(8, 5))
+bars = top_titles.plot(kind='bar', color='skyblue')
+plt.title(f'Top 5 Job Titles in Cluster {cluster_num}')
+plt.xlabel('Job Title')
+plt.ylabel('Count')
+plt.xticks(rotation=45, ha='right') 
+out_path = "figures/Top_5_Job_Titles_in_Cluster.png"
+plt.savefig(out_path, dpi=150, bbox_inches="tight")
+
+# Add the counts on top of the bars
+for idx, value in enumerate(top_titles.values):
+    plt.text(idx, value + max(top_titles.values)*0.01, str(value), ha='center', va='bottom', fontweight='bold')
+
+plt.tight_layout()
+#plt.show()
+plt.close()
+#![Top 5 Job Titles in Cluster 0](figures/Top_5_Job_Titles_in_Cluster.png)
+``` -->
+
+
 ```{python}
 # Cross-tab clusters by industry to interpret groupings
 crosstab = pd.crosstab(
     df.loc[X.index, 'KMEANS_CLUSTER'],
     df.loc[X.index, 'NAICS_2022_6_NAME']
 )
-crosstab
 ```
 
 ## Regression – Predicting Salary
@@ -249,18 +220,16 @@ We modeled salary using Minimum Years of Experience (MIN_YEARS_EXPERIENCE) and R
 
 **Model performance**
 
-**RMSE**: 34,744.38
-**R²**: 0.336
+- **RMSE**: 34,744.38
+- **R²**: 0.336
 
 **What this means**
 An R² of 0.336 indicates experience and remote status explain a meaningful, but incomplete share of salary variation. That’s consistent with cross-industry labor data, where compensation is also driven by occupation, industry, location, and scarce technical capabilities.
 
 **Business relevance**
+
 - **For job seekers**: Experience contributes to higher earnings, but targeted specialization (e.g., analytics, cloud, data engineering) and industry selection are decisive for larger pay jumps.
 - **For employers**: Pricing talent solely by tenure can misalign offers in high-skill roles. Clear remote/on-site definitions in postings improve candidate signal and reduce noise in market benchmarking.
-
-**Outliers to review**
-A small number of postings show very high pay at low experience with unspecified remote type. These likely reflect specialized roles or incomplete records. In practice, validate or isolate these cases before setting salary bands or training production models.
 
 ```{python}
 # Visual: Predicted vs. Actual Salary
@@ -279,9 +248,10 @@ lo, hi = float(y_actual.min()), float(y_actual.max())
 plt.plot([lo, hi], [lo, hi], 'r--', label="Perfect Prediction")
 plt.legend()
 plt.tight_layout()
-plt.show()
 out_path = "figures/Predicted_vs_Actual_RF_Regression.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight")
+#plt.show()
+plt.close()
 ```
 ![Predicted vs. Actual Salary (Random Forest Regression)](figures/Predicted_vs_Actual_RF_Regression.png)
 
@@ -309,9 +279,10 @@ plt.xlabel('Importance')
 plt.title('Top 5 Feature Importances (Random Forest Regression)')
 plt.gca().invert_yaxis()
 plt.tight_layout()
-plt.show()
-out_path = "figures/Top_5_Feature_Importances_RF_Regression).png"
+out_path = "figures/Top_5_Feature_Importances_RF_Regression.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight")
+#plt.show()
+plt.close()
 ```
 ![Top 5 Feature Importances (Random Forest Regression)](figures/Top_5_Feature_Importances_RF_Regression.png)
 
@@ -365,21 +336,26 @@ plt.bar(labels, subset["SALARY"].fillna(0))
 plt.ylabel("Actual Salary")
 plt.title("Top 5 Outlier Job Salaries")
 plt.tight_layout()
-plt.show()
-out_path = "figures/Top_5_Outlier_Job_Salaries).png"
+out_path = "figures/Top_5_Outlier_Job_Salaries.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight")
+#plt.show()
+plt.close()
 ```
-![Top 5 Outlier Job Salaries](figures/Top_5_Outlier_Job_Salaries.png)
 
-## Outlier Jobs and Market Signals
+### Outlier Jobs and Market Signals
 The largest residuals include postings above $300,000 with only 1–5 years minimum experience, often missing a remote/on-site label. These cases point to specialized, high-impact roles where compensation is decoupled from tenure (e.g., advanced analytics, cloud/platform, niche leadership).
+
+A small number of postings show very high pay at low experience with unspecified remote type. These likely reflect specialized roles or incomplete records. In practice, validate or isolate these cases before setting salary bands or training production models.
+
+![Top 5 Outlier Job Salaries](figures/Top_5_Outlier_Job_Salaries.png)
 
 **Business relevance**
 
-**Employers**: Standardize and QA high-pay, low-tenure postings, unclear fields and atypical mixes should be reviewed before publication.
-**Job seekers**: Outliers highlight skill paths where focused upskilling can command premium pay earlier in a career.
+- **Employers**: Standardize and QA high-pay, low-tenure postings, unclear fields and atypical mixes should be reviewed before publication.
+- **Job seekers**: Outliers highlight skill paths where focused upskilling can command premium pay earlier in a career.
 
 ## Classification – Predicting Remote vs On-Site Job
+We trained a logistic regression to predict Remote vs On-Site using MIN_YEARS_EXPERIENCE plus an available categorical descriptor (e.g., employment type or state).
 ```{python}
 # Classification: Predicting Remote vs On-Site Jobs
 from sklearn.model_selection import train_test_split
@@ -431,23 +407,23 @@ print(f"Accuracy: {acc:.3f}, F1 Score: {f1:.3f}")
 # Confusion matrix
 ConfusionMatrixDisplay(confusion_matrix(y_test, pred)).plot(cmap="Blues")
 plt.title("Confusion Matrix — Remote vs On-Site Classification")
-plt.show()
 out_path = "figures/Confusion_Matrix_Remote_vs_On-Site.png"
 plt.savefig(out_path, dpi=150, bbox_inches="tight")
+#plt.show()
+plt.close()
 ```
 ![Confusion Matrix — Remote vs On-Site Classification](figures/Confusion_Matrix_Remote_vs_On-Site.png)
 
 ### Classification Results and Interpretation
-We trained a logistic regression to predict Remote vs On-Site using MIN_YEARS_EXPERIENCE plus an available categorical descriptor (e.g., employment type or state).
+**Performance:**
 
-**Performance**
+- **Accuracy**: 0.622
+- **F1 Score**: 0.327
 
-**Accuracy**: 0.622
-**F1 Score**: 0.327
-
-**What this means**
+**What this means:**
 The model distinguishes remote vs. on-site at a moderate level, consistent with the idea that remote status is policy/role-design driven, not primarily a function of required experience.
 
-**Business relevance**
-Employers: Remote flexibility can be offered across experience levels without materially distorting supply. If remote status is strategic, emphasize role/industry signals rather than tenure in postings.
-Job seekers: Remote options exist from entry to senior levels, broadening geographic reach and negotiation leverage.
+**Business relevance:**
+
+- **Employers:** Remote flexibility can be offered across experience levels without materially distorting supply. If remote status is strategic, emphasize role/industry signals rather than tenure in postings.
+- **Job seekers:** Remote options exist from entry to senior levels, broadening geographic reach and negotiation leverage.
