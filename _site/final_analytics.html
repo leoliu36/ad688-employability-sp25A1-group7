@@ -6,8 +6,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Angelina McKim">
+<meta name="author" content="Devin Blanchard">
+<meta name="author" content="Leo Liu">
+<meta name="dcterms.date" content="2025-09-10">
 
-<title>Data Analysis – AD688 Group 7 – Job Market Analysis 2024</title>
+<title>Exploratory Data Analysis – Job Market Analysis 2024</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,45 +24,10 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -102,9 +71,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="styles.css">
@@ -118,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">AD688 Group 7 – Job Market Analysis 2024</span>
+    <span class="navbar-title">Job Market Analysis 2024</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -128,20 +94,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Project Overview</span></a>
+    <a class="nav-link" href="./introduction.html"> 
+<span class="menu-text">Introduction</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./data_analysis.html" aria-current="page"> 
-<span class="menu-text">Data Analysis</span></a>
+    <a class="nav-link" href="./data_cleaning.qmd/ipynb"> 
+<span class="menu-text">Data Cleaning &amp; Exploration</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./career_plan.html"> 
-<span class="menu-text">Career Plans</span></a>
+    <a class="nav-link" href="./eda.qmd/ipynb"> 
+<span class="menu-text">Exploratory Data Analysis</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
-<span class="menu-text">About</span></a>
+    <a class="nav-link" href="./skill_gap_analysis.qmd/ipynb"> 
+<span class="menu-text">Skill Gap Analysis</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./final_analytics.qmd/ipynb"> 
+<span class="menu-text">Final Analytics</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./conclusion.qmd/ipynb"> 
+<span class="menu-text">conclusion</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -154,32 +128,65 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="header-section-number">1</span> Overview</a></li>
-  <li><a href="#key-findings" id="toc-key-findings" class="nav-link" data-scroll-target="#key-findings"><span class="header-section-number">2</span> Key Findings</a></li>
-  <li><a href="#visualizations" id="toc-visualizations" class="nav-link" data-scroll-target="#visualizations"><span class="header-section-number">3</span> Visualizations</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Data Analysis</h1>
-<p class="subtitle lead">Comprehensive Data Cleaning &amp; Exploratory Analysis of Job Market Trends</p>
+<h1 class="title">Exploratory Data Analysis</h1>
+<p class="subtitle lead">Understanding Job Market Trends in 2024</p>
 </div>
 
 
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Authors</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Angelina McKim </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Boston University
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Devin Blanchard </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Boston University
+          </p>
+      </div>
+    <div class="quarto-title-meta-contents">
+    <p class="author">Leo Liu </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Boston University
+          </p>
+      </div>
+  </div>
 
 <div class="quarto-title-meta">
 
-    
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 10, 2025</p>
+    </div>
+  </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">October 10, 2025</p>
+    </div>
+  </div>
     
   </div>
   
@@ -188,197 +195,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="overview" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
-<!-- Brief overview of the dataset, tools used, and focus -->
-</section>
-<section id="key-findings" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="key-findings"><span class="header-section-number">2</span> Key Findings</h2>
-<!-- Describe 2–4 major insights -->
-</section>
-<section id="visualizations" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="visualizations"><span class="header-section-number">3</span> Visualizations</h2>
-<!-- Embed figures or charts -->
-<div id="13331d76" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>sys.executable</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>'/Users/leoliu/GitHub/ad688-employability-sp25A1-group7/.venv/bin/python3'</code></pre>
-</div>
-</div>
-<div id="6f6cef01" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load lightcast_job_postings.csv </span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/lightcast_job_postings.csv"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/y1/rx8hx7116f35w_wcxbtlb5m80000gn/T/ipykernel_39274/3827192418.py:3: DtypeWarning:
-
-Columns (19,30) have mixed types. Specify dtype option on import or set low_memory=False.
-</code></pre>
-</div>
-<div class="cell-output cell-output-display" data-execution_count="6">
-<div>
 
 
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">ID</th>
-<th data-quarto-table-cell-role="th">LAST_UPDATED_DATE</th>
-<th data-quarto-table-cell-role="th">LAST_UPDATED_TIMESTAMP</th>
-<th data-quarto-table-cell-role="th">DUPLICATES</th>
-<th data-quarto-table-cell-role="th">POSTED</th>
-<th data-quarto-table-cell-role="th">EXPIRED</th>
-<th data-quarto-table-cell-role="th">DURATION</th>
-<th data-quarto-table-cell-role="th">SOURCE_TYPES</th>
-<th data-quarto-table-cell-role="th">SOURCES</th>
-<th data-quarto-table-cell-role="th">URL</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_2</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_2_NAME</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_3</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_3_NAME</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_4</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_4_NAME</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_5</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_5_NAME</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_6</th>
-<th data-quarto-table-cell-role="th">NAICS_2022_6_NAME</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>1f57d95acf4dc67ed2819eb12f049f6a5c11782c</td>
-<td>9/6/2024</td>
-<td>2024-09-06 20:32:57.352 Z</td>
-<td>0.0</td>
-<td>6/2/2024</td>
-<td>6/8/2024</td>
-<td>6.0</td>
-<td>[\n "Company"\n]</td>
-<td>[\n "brassring.com"\n]</td>
-<td>[\n "https://sjobs.brassring.com/TGnewUI/Sear...</td>
-<td>...</td>
-<td>44.0</td>
-<td>Retail Trade</td>
-<td>441.0</td>
-<td>Motor Vehicle and Parts Dealers</td>
-<td>4413.0</td>
-<td>Automotive Parts, Accessories, and Tire Retailers</td>
-<td>44133.0</td>
-<td>Automotive Parts and Accessories Retailers</td>
-<td>441330.0</td>
-<td>Automotive Parts and Accessories Retailers</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>0cb072af26757b6c4ea9464472a50a443af681ac</td>
-<td>8/2/2024</td>
-<td>2024-08-02 17:08:58.838 Z</td>
-<td>0.0</td>
-<td>6/2/2024</td>
-<td>8/1/2024</td>
-<td>NaN</td>
-<td>[\n "Job Board"\n]</td>
-<td>[\n "maine.gov"\n]</td>
-<td>[\n "https://joblink.maine.gov/jobs/1085740"\n]</td>
-<td>...</td>
-<td>56.0</td>
-<td>Administrative and Support and Waste Managemen...</td>
-<td>561.0</td>
-<td>Administrative and Support Services</td>
-<td>5613.0</td>
-<td>Employment Services</td>
-<td>56132.0</td>
-<td>Temporary Help Services</td>
-<td>561320.0</td>
-<td>Temporary Help Services</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>85318b12b3331fa490d32ad014379df01855c557</td>
-<td>9/6/2024</td>
-<td>2024-09-06 20:32:57.352 Z</td>
-<td>1.0</td>
-<td>6/2/2024</td>
-<td>7/7/2024</td>
-<td>35.0</td>
-<td>[\n "Job Board"\n]</td>
-<td>[\n "dejobs.org"\n]</td>
-<td>[\n "https://dejobs.org/dallas-tx/data-analys...</td>
-<td>...</td>
-<td>52.0</td>
-<td>Finance and Insurance</td>
-<td>524.0</td>
-<td>Insurance Carriers and Related Activities</td>
-<td>5242.0</td>
-<td>Agencies, Brokerages, and Other Insurance Rela...</td>
-<td>52429.0</td>
-<td>Other Insurance Related Activities</td>
-<td>524291.0</td>
-<td>Claims Adjusting</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>1b5c3941e54a1889ef4f8ae55b401a550708a310</td>
-<td>9/6/2024</td>
-<td>2024-09-06 20:32:57.352 Z</td>
-<td>1.0</td>
-<td>6/2/2024</td>
-<td>7/20/2024</td>
-<td>48.0</td>
-<td>[\n "Job Board"\n]</td>
-<td>[\n "disabledperson.com",\n "dejobs.org"\n]</td>
-<td>[\n "https://www.disabledperson.com/jobs/5948...</td>
-<td>...</td>
-<td>52.0</td>
-<td>Finance and Insurance</td>
-<td>522.0</td>
-<td>Credit Intermediation and Related Activities</td>
-<td>5221.0</td>
-<td>Depository Credit Intermediation</td>
-<td>52211.0</td>
-<td>Commercial Banking</td>
-<td>522110.0</td>
-<td>Commercial Banking</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>cb5ca25f02bdf25c13edfede7931508bfd9e858f</td>
-<td>6/19/2024</td>
-<td>2024-06-19 07:00:00.000 Z</td>
-<td>0.0</td>
-<td>6/2/2024</td>
-<td>6/17/2024</td>
-<td>15.0</td>
-<td>[\n "FreeJobBoard"\n]</td>
-<td>[\n "craigslist.org"\n]</td>
-<td>[\n "https://modesto.craigslist.org/sls/77475...</td>
-<td>...</td>
-<td>99.0</td>
-<td>Unclassified Industry</td>
-<td>999.0</td>
-<td>Unclassified Industry</td>
-<td>9999.0</td>
-<td>Unclassified Industry</td>
-<td>99999.0</td>
-<td>Unclassified Industry</td>
-<td>999999.0</td>
-<td>Unclassified Industry</td>
-</tr>
-</tbody>
-</table>
-
-<p>5 rows × 131 columns</p>
-</div>
-</div>
-</div>
-
-
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

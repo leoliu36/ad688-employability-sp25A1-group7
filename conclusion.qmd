@@ -1,0 +1,29 @@
+---
+title: "Conclusion"
+author:   
+  - name: Angelina McKim
+    affiliations:
+      - id: bu
+        name: Boston University
+        city: Boston
+        state: MA
+  - name: Devin Blanchard
+    affiliations:
+      - ref: bu
+  - name: Leo Liu
+    affiliations:
+      - ref: bu
+date: 2025-09-10
+date-modified: 2025-10-10
+bibliography: references.bib
+csl: csl/econometrica.csl
+execute:
+  echo: false     
+  warning: false  
+  message: false   
+format: 
+  html:
+    toc: true
+    number-sections: true
+    df-print: paged
+---

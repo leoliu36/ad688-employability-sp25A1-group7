@@ -3,6 +3,9 @@ title: "Exploratory Data Analysis"
 subtitle: "Understanding Job Market Trends in 2024"
 execute:
   kernel: ad688-venv
+  echo: false     
+  warning: false  
+  message: false   
 author:   
   - name: Angelina McKim
     affiliations:
@@ -20,10 +23,6 @@ date: 2025-09-10
 date-modified: 2025-10-10
 bibliography: references.bib
 csl: csl/econometrica.csl
-execute:
-  echo: false     
-  warning: false  
-  message: false   
 format: 
   html:
     toc: true

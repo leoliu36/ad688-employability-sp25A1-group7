@@ -26,9 +26,7 @@ csl: csl/econometrica.csl
 
 {{< include data_cleaning.qmd >}}
 
-{{< embed skill_gap_analysis.ipynb >}}
-
-{{< embed ml_methods.ipynb >}}
+{{< embed skill_gap_analysis.qmd >}}
 
 {{< include final_analytics.qmd >}}
 
