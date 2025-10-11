@@ -65,8 +65,8 @@ plt.title("Team Skill Levels Heatmap")
 plt.show()
 ```
 
-## External Skills Assessment via Text Mining
-To identify the most in-demand skills in the analytics job market, we analyzed the job descriptions from the Lightcast dataset by text mining the BODY column which contained detailed job descriptions. Below is a summary of the data preparation and extraction process:
+## External Skills Assessment using Natural Language Processing techniques
+To identify the most in-demand skills in the analytics job market, we analyzed the job descriptions from the Lightcast dataset by leveraging Natural Language Processing (NLP) techniques to process the BODY column which contained detailed job descriptions. Below is a summary of the data preparation and extraction process:
 	•	Text normalization: To ensure consistency, job descriptions were converted to lowercase, Unicode-normalized format, and whitespaces were stripped. 
 	•	Tokenization: Numbers and punctuation were filtered out to ensure words can be captured and extracted properly.
 	•	Stopword removal: To further filter and concentrate only on meaningful technical words, common English stopwords were removed using Scikit-learn's built-in stopword list. 
