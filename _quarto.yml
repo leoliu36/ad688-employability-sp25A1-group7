@@ -40,3 +40,6 @@ execute:
   cache: false
   freeze: auto
   python: .venv/bin/python
+
+bibliography: references.bib
+csl: csl/econometrica.csl
