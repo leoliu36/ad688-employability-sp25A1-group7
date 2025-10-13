@@ -1,1 +1,21 @@
-## Conclusion
+# Conclusion & Recommendation
+This project, which analyzed the 2024 job market, provided key insights into the factors influencing compensation and future workforce development. Our analysis confirms that the employment landscape is being fundamentally reshaped by technology and the demand for flexible work, creating both challenges and opportunities for job seekers and employers.
+
+## Key Findings and Market Dynamics
+Skill-Driven Wage Premiums
+Our Natural Language Processing (NLP) analysis identified a clear difference between the team’s strengths and current market demand. While the team performs well in visualization tools such as Excel, Power BI, and Tableau, the job market places greater emphasis on Cloud Computing, SQL, Python, and Machine Learning (ML). The frequency of these skills in job postings shows that focused development in these areas supports higher compensation and continued competitiveness in analytics roles.
+Experience as the Primary Salary Driver
+The Random Forest Regression model achieved an RMSE of 34,744.38 and an R² of 0.336, identifying Minimum Years of Experience as the most influential feature in predicting salary, with a feature importance of approximately 0.953. This result indicates that, while technical specialization enhances access to well-paid roles, accumulated experience continues to be the main factor influencing salary progression.
+The Segmented Job Market
+The KMeans Clustering model grouped job postings into five clusters, summarized into three main tiers—Entry-Level (lower salary), Mid-Career (moderate salary), and Senior Specialist (higher salary). This pattern aligns with traditional career development paths and suggests that job seekers should aim for higher-tier roles by combining experience with proficiency in high-demand skills such as Cloud Computing, Python, and Machine Learning.
+Remote Work Status is Not Experience-Dependent
+The Logistic Regression model achieved an accuracy of 0.622 and an F1 score of 0.327, showing moderate predictive strength when using experience to classify remote versus on-site jobs. This suggests that remote flexibility depends more on company policy or role design than on years of experience. Remote opportunities appear across all experience tiers, providing both entry-level and senior professionals with broader access to roles.
+
+## Strategic Recommendations
+Based on these findings, the following strategies are recommended for both job seekers (the team) and employers:
+Continue Upskilling in Cloud and Machine Learning
+Efforts should focus on further developing Cloud/AWS and Machine Learning/NLP skills. These areas show the greatest opportunity for alignment with market needs and can improve access to higher-tier roles.
+Standardize High-Value Job Postings
+Employers should review and standardize postings with high salaries and lower experience requirements. Accurate labeling of REMOTE_TYPE and clear definitions of required technical skills will improve market consistency, strengthen salary benchmarking, and attract well-matched candidates.
+Use Remote Flexibility to Expand Talent Pools
+Since remote status does not strongly depend on experience, employers can apply flexible work policies to reach qualified candidates at all career levels. This approach supports broader hiring while maintaining consistency in pay structures.
