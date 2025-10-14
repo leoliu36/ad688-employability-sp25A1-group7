@@ -195,7 +195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="internal-skills-assessment" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="internal-skills-assessment"><span class="header-section-number">1</span> Internal Skills Assessment</h2>
 <p>To evaluate the current technical skill set for each team member, each team member performed a self-rating for a set of core competencies for data analytics and data science, which included Python, SQL, Power BI, Tableau, Excel, Machine Learning, Natural Language Processing (NLP), Cloud Computing, and AWS. The assessment was made on a five-point scale, and the rating values were then compiled into a dataframe for further analysis. We then leveraged a Seaborn heatmap to identify where our strengths concentrated and pinpoint where the gaps existed.</p>
-<div id="c3f98aae" class="cell" data-execution_count="1">
+<div id="0cf018e8" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _setup.qmd</span></span>
@@ -230,7 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>sns.set_palette(<span class="st">"Set2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="2ac4de5d" class="cell" data-execution_count="2">
+<div id="b43295aa" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -239,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/cleaned_job_postings.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="3ddcc84a" class="cell" data-execution_count="3">
+<div id="5360825b" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create list of relevant analytics skills and rate each member from 1-5</span></span>
@@ -299,7 +299,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Keyword filtering:</strong> A predefined list of relevant analytics skills (e.g., Python, SQL, AWS, Tableau, Excel, Pandas, Spark, Machine Learning, NLP, Cloud Computing) was used to identify and count occurrences within the job descriptions.</li>
 <li><strong>Frequency analysis:</strong> Using Python’s Counter() function, we tallied the frequency of each skill keyword and visualized in a column chart to understand their significance in the job market.</li>
 </ul>
-<div id="fb3eaffc" class="cell" data-execution_count="4">
+<div id="06cdb352" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Extract most in-demand skills from JD (optimized)</span></span>

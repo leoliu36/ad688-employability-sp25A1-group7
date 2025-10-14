@@ -14,7 +14,7 @@ author:
   - name: Leo Liu
     affiliations:
       - ref: bu
-date: "2025-10-10"
+date: "2025-10-14"
 format:
   docx:
     toc: true
@@ -29,6 +29,7 @@ execute:
 
 {{< include introduction.qmd >}}
 {{< include data_cleaning.qmd >}}
+{{< include eda.qmd >}}
 {{< include skill_gap_analysis.qmd >}}
 {{< include final_analytics.qmd >}}
 {{< include conclusion.qmd >}}

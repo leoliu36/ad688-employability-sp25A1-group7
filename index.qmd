@@ -15,6 +15,20 @@ author:
   - name: Leo Liu
     affiliations:
       - ref: bu
-date: 2025-09-10
+date: 2025-10-14
 ---
 
+# Welcome 
+This project explores how **Artificial Intelligence (AI)**, **remote work**, **work experience** and other emerging labor-market factors are transforming compensation structures across the U.S. job market. Our team analyzed over 70,000 job postings from the Lightcast database to uncover patterns in:
+
+- Remote vs. in-office work arrangements  
+- Skill demand trends and emerging gaps  
+- Salary distribution across AI vs. non-AI roles 
+
+The results provide insight into how job seekers can realign their skillset to achieve higher compensation in response to changes in the labor market. 
+
+---
+
+# Explore the Report
+
+Use the navigation bar above to view each section of the analysis, including data cleaning, exploratory analytics, skill gap analysis, and final insights.

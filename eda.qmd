@@ -88,7 +88,7 @@ Among the 10 most in-demand skills, Data Analysis commands the highest average s
 
 
 ## Salary Trends by Top Industries
-The purpose of this EDA is to explore how compensation varies across economic sectors and identify which industries offer the highest earning potential. Using the 2024 job posting data and grouping by industry (NAICS 2022 Level-6 codes), this analysis aims to compare the median salary and salary distribution across highest-paying industries within the job market. 
+The motivation for this EDA is to explore how compensation varies across economic sectors and identify which industries offer the highest earning potential. Using the 2024 job posting data and grouping by industry (NAICS 2022 Level-6 codes), this analysis aims to compare the median salary and salary distribution across highest-paying industries within the job market. 
 
 ```{python}
 ## Query Setup

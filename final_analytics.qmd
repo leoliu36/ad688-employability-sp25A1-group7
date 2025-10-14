@@ -1,7 +1,7 @@
 # Regression, Classification, and Topic Insights
 
 ## KMeans Clustering Analysis
-We performed KMeans clustering on job postings using core features (salary, minimum and maximum years of experience). This analysis seeks to segment jobs into groups with similar compensation and experience profiles, and to interpret these clusters using industry categories (NAICS).
+We performed KMeans clustering on job postings using core features (salary, minimum years of experience). This analysis seeks to segment jobs into groups with similar compensation and experience profiles, and to interpret these clusters using industry categories (NAICS).
 
 ### Fit KMeans and Assign Clusters - Data Prep
 We used KMeans clustering to segment jobs into five groups, using standardized salary and experience as inputs. Each posting is assigned to a cluster.
