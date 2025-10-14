@@ -15,14 +15,14 @@ import pandas as pd
 
 skills_data = {
     "Name": ["Angelina", "Devin", "Leo"],
-    "Python": [3, 1, 3],
-    "SQL": [3, 3, 3],
+    "Python": [3, 2, 3],
+    "SQL": [3, 4, 3],
     "Power BI": [5, 4, 4],
-    "Tableau": [4, 3, 2],
+    "Tableau": [4, 5, 2],
     "Excel": [5, 5, 4],
     "Machine Learning": [2, 1, 1],
     "NLP": [2, 1, 1],
-    "Cloud Computing": [1, 2, 1],
+    "Cloud Computing": [1, 1, 1],
     "AWS": [1, 1, 1]
 }
 
@@ -46,7 +46,7 @@ plt.close()
 **Which skills should each member prioritize learning?**
 
 - **Angelina** – Strong in visualization tools (Power BI 5, Tableau 4, Excel 5). Next priorities: Cloud, AWS, Machine Learning, and NLP. These are high-demand in job postings (Cloud: 64k+, AWS: 10k+, ML/NLP combined: 23k+).  
-- **Devin** – Solid in Excel (5) and Tableau (3), but weakest in Python, ML, NLP, and AWS. Needs to raise Cloud as well.  
+- **Devin** – Solid in Excel (5) and Tableau (5), but weakest in Python, ML, NLP, and AWS. Needs to raise Cloud as well.  
 - **Leo** – Stronger in Power BI (4) and Excel (4), but very low in ML, NLP, Cloud, and AWS. Should also build up Python and SQL to meet market demand (Python: 17k+, SQL: 43k+ mentions).  
 
 ## External Skills Assessment using Natural Language Processing techniques
