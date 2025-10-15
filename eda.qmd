@@ -38,55 +38,6 @@ fig1.write_image("figures/salary_by_work_arrangement.png", scale=2)
 **Key Insights:**
 The median salaries across all work arrangements are similar, clustering around $115,000. However, both Remote and Hybrid Remote roles exhibit a much wider salary range and more high-paying outlier positions, with some remote roles exceeding $350,000. This suggests that while typical pay is comparable, remote-friendly positions offer significantly greater potential for top-end compensation.
 
-
-## Top Skills vs. Average Salary
-The purpose of this EDA is to identify which specific skills are most financially valuable in the current job market, connecting AI-related skills to compensation. This could reveal that skills related to AI/ML platforms command a significantly higher salary, even if they aren't the most frequently requested skills overall.
-
-```{python}
-# 5.1.2 Visual - Skills vs. Salary
-import plotly.express as px
-import ast
-
-# This function safely converts the string of a list into an actual list
-def parse_skills(skill_list_str):
-    try:
-        return ast.literal_eval(skill_list_str)
-    except (ValueError, SyntaxError):
-        return []
-
-# Create a new column with the cleaned lists of skills
-df['SKILLS_LIST'] = df['SKILLS_NAME'].apply(parse_skills)
-
-# Create a new DataFrame where each skill gets its own row
-df_skills_exploded = df.explode('SKILLS_LIST')
-
-# --- Now, create the chart using the cleaned data ---
-top_10_skills_by_count = df_skills_exploded['SKILLS_LIST'].value_counts().nlargest(10).index
-df_top_skills = df_skills_exploded[df_skills_exploded['SKILLS_LIST'].isin(top_10_skills_by_count)]
-
-avg_salary_for_top_skills = df_top_skills.groupby('SKILLS_LIST')['SALARY'].mean().reset_index()
-
-fig2 = px.bar(
-    avg_salary_for_top_skills,
-    x='SKILLS_LIST',
-    y="SALARY",
-    title="Average Salary for Top 10 Skills",
-    labels={'SKILLS_LIST': "Skill", "SALARY": "Average Annual Salary ($)"},
-    width=800,
-    height=600,                       
-    color_discrete_sequence=px.colors.qualitative.Set2,
-    opacity=0.7
-)
-#fig2.show()
-fig2.write_image("figures/topskills_salary.png", scale=2)
-```
-
-![Figure 3: Average Salary for Top 10 Skills most in Demand](figures/topskills_salary.png)
-
-**Key Insights:**
-Among the 10 most in-demand skills, Data Analysis commands the highest average salary at over $120,000. While compensation for most top skills is competitive, technical skills like Data Analysis and Business Process show a slight financial advantage over the lowest-paid skill in this group, Management, which averages approximately $110,000.
-
-
 ## Salary Trends by Top Industries
 The motivation for this EDA is to explore how compensation varies across economic sectors and identify which industries offer the highest earning potential. Using the 2024 job posting data and grouping by industry (NAICS 2022 Level-6 codes), this analysis aims to compare the median salary and salary distribution across highest-paying industries within the job market. 
 
@@ -162,7 +113,7 @@ plt.savefig(out_path, dpi=150, bbox_inches="tight")
 plt.close()
 ```
 
-![Figure 4: Median Salary by Industry](figures/median_salary_by_industry.png)
+![Figure 3: Median Salary by Industry](figures/median_salary_by_industry.png)
 
 ```{python}
 ## Plot: Analyze Salary Distribution by Industry (Seaborn)
@@ -208,7 +159,7 @@ plt.savefig(out_path, dpi=150, bbox_inches="tight")
 plt.close()
 ```
 
-![Figure 5: Salary Distribution by Industry](figures/salary_distribution_by_industry.png)
+![Figure 4: Salary Distribution by Industry](figures/salary_distribution_by_industry.png)
 
 **Key Insights:**
 The analysis of median salary across industries shows that Web Search Portals and All Other Information Services leads with the highest median pay, exceeding $160,000. This is likely due to the increasing demand on specialized digital infrastructure and AI-driven information services. The box plot shows a wide interquartile range (IQR), indicating a significant pay gap between entry-level and more senior/specialized roles in the industry. This trend is also observed in the Computing Infrastructure Providers, Data Processing, Web Hosting, and Related Services category, which is indicative of the range of roles in demand for those industries. Although other technology and information industries such as Software Publishers and Computer System Design Services reported slightly lower median salaries compared to the top-paying sectors, the large amount of high-end outlier values suggests that these industries still offer high-earning potential for more senior/specialized roles with most positions clustering around mid-range salaries. 
@@ -286,7 +237,7 @@ plt.savefig(out_path, dpi=150)
 plt.close()
 ```
 
-![Figure 6: Salary Distribution comparison between AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_boxplot.png)
+![Figure 5: Salary Distribution comparison between AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_boxplot.png)
 
 ```{python}
 import matplotlib.pyplot as plt
@@ -317,7 +268,7 @@ plt.savefig(out_path, dpi=150)
 plt.close()
 ```
 
-![Figure 7: Salary Density comparison between AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
+![Figure 6: Salary Density comparison between AI vs. Non-AI Jobs](figures/AI_v_nonAI_salary_KDE.png)
 
 **Key Insights:**
 The salary comparison between AI and non-AI job postings shows a wage premium associated with roles that require AI-related skill sets. Analyzing 5273 AI roles and 15949 non-AI roles, the box plot shows that AI roles have a higher median salary ($115,000-$120,000) than non-AI roles ($105,000-$110,000). In terms of IQRs - both Q1 and Q3 for AI roles is positioned higher in comparison to non-AI roles. This suggests that roles that require expertise in AI-related skills generally pay better than the rest of the job market. 
