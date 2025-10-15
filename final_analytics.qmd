@@ -6,7 +6,7 @@ We performed KMeans clustering on job postings using core features (salary, mini
 ### Fit KMeans and Assign Clusters - Data Prep
 We used KMeans clustering to segment jobs into five groups, using standardized salary and experience as inputs. Each posting is assigned to a cluster.
 
-![Figure 10: KMeans Clusters by Salary and Min Years Experience](figures/KMeans_Cluster.png)
+![Figure 9: KMeans Clusters by Salary and Min Years Experience](figures/KMeans_Cluster.png)
 {{< include _setup.qmd >}}
 ```{python}
 import pandas as pd
@@ -253,7 +253,7 @@ plt.savefig(out_path, dpi=150, bbox_inches="tight")
 #plt.show()
 plt.close()
 ```
-![Predicted vs. Actual Salary (Random Forest Regression)](figures/Predicted_vs_Actual_RF_Regression.png)
+![Figure 10: Predicted vs. Actual Salary (Random Forest Regression)](figures/Predicted_vs_Actual_RF_Regression.png)
 
 ```{python}
 # Feature importance: shows which variables most influence salary prediction
@@ -284,7 +284,7 @@ plt.savefig(out_path, dpi=150, bbox_inches="tight")
 #plt.show()
 plt.close()
 ```
-![Top 5 Feature Importances (Random Forest Regression)](figures/Top_5_Feature_Importances_RF_Regression.png)
+![Figure 11: Top 5 Feature Importances (Random Forest Regression)](figures/Top_5_Feature_Importances_RF_Regression.png)
 
 ```{python}
 # Calculate absolute prediction error for each job
@@ -347,7 +347,7 @@ The largest residuals include postings above $300,000 with only 1–5 years mini
 
 A small number of postings show very high pay at low experience with unspecified remote type. These likely reflect specialized roles or incomplete records. In practice, validate or isolate these cases before setting salary bands or training production models.
 
-![Top 5 Outlier Job Salaries](figures/Top_5_Outlier_Job_Salaries.png)
+![Figure 12: Top 5 Outlier Job Salaries](figures/Top_5_Outlier_Job_Salaries.png)
 
 **Business relevance**
 
@@ -412,7 +412,7 @@ plt.savefig(out_path, dpi=150, bbox_inches="tight")
 #plt.show()
 plt.close()
 ```
-![Confusion Matrix — Remote vs On-Site Classification](figures/Confusion_Matrix_Remote_vs_On-Site.png)
+![Figure 13: Confusion Matrix — Remote vs On-Site Classification](figures/Confusion_Matrix_Remote_vs_On-Site.png)
 
 ### Classification Results and Interpretation
 **Performance:**

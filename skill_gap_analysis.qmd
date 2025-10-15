@@ -41,7 +41,7 @@ plt.title("Team Skill Levels Heatmap")
 #plt.show()
 plt.close()
 ```
-![Figure 8: Team Skill Levels Heatmap](figures/Team_Skills_Heatmap.png)
+![Figure 7: Team Skill Levels Heatmap](figures/Team_Skills_Heatmap.png)
 
 **Which skills should each member prioritize learning?**
 
@@ -132,7 +132,7 @@ if skills_filtered:
     #print(f"[Saved chart] {out_path}")
 
 ```
-![Figure 9: Most In-demand skills from Job Descriptions](figures/jd_top_skills.png)
+![Figure 8: Most In-demand skills from Job Descriptions](figures/jd_top_skills.png)
 
 ## Propose an Improvement Plan
 According to our analysis, job postings show high demand for Cloud, SQL, Python, ML, and AWS. Our team is strong in visualization (Excel, Power BI, Tableau) but weaker in Cloud, ML, and NLP. This plan aligns our learning with market needs, provides specific resources, and ensures collaboration strategies so the whole team can close the gap together.
