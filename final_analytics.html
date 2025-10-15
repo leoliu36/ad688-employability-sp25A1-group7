@@ -212,10 +212,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/KMeans_Cluster.png" class="img-fluid figure-img"></p>
-<figcaption>Figure 10: KMeans Clusters by Salary and Min Years Experience</figcaption>
+<figcaption>Figure 9: KMeans Clusters by Salary and Min Years Experience</figcaption>
 </figure>
 </div>
-<div id="fc0d8543" class="cell" data-execution_count="1">
+<div id="49019a48" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># _setup.qmd</span></span>
@@ -250,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>sns.set_palette(<span class="st">"Set2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="c4940d8c" class="cell" data-execution_count="2">
+<div id="4eff501b" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -259,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data/cleaned_job_postings.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="205aa0bd" class="cell" data-execution_count="3">
+<div id="c72e4952" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
@@ -447,7 +447,7 @@ plt.tight_layout()
 plt.close()
 #![Top 5 Job Titles in Cluster 0](figures/Top_5_Job_Titles_in_Cluster.png)
 ``` -->
-<div id="48713e59" class="cell" data-execution_count="4">
+<div id="1bf9bdb3" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cross-tab clusters by industry to interpret groupings</span></span>
@@ -463,7 +463,7 @@ plt.close()
 <h2 data-number="2" class="anchored" data-anchor-id="regression-predicting-salary"><span class="header-section-number">2</span> Regression – Predicting Salary</h2>
 <p>We chose Random Forest over Linear Regression because the relationship between experience and salary is non-linear, and the model captures complex interactions more effectively.</p>
 <p>The goal of this model is to predict job posting salary using experience and employment type features. The model uses an 80/20 train–test split and evaluates performance using RMSE and R² metrics.</p>
-<div id="dd19705d" class="cell" data-execution_count="5">
+<div id="df35e760" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Feature Selection and Data Preparation</span></span>
@@ -488,7 +488,7 @@ plt.close()
 <span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="2dde5c51" class="cell" data-execution_count="6">
+<div id="336a265a" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Random Forest Regression</span></span>
@@ -539,7 +539,7 @@ R² Score: 0.336</code></pre>
 <li><strong>For job seekers</strong>: Experience contributes to higher earnings, but targeted specialization (e.g., analytics, cloud, data engineering) and industry selection are decisive for larger pay jumps.</li>
 <li><strong>For employers</strong>: Pricing talent solely by tenure can misalign offers in high-skill roles. Clear remote/on-site definitions in postings improve candidate signal and reduce noise in market benchmarking.</li>
 </ul>
-<div id="b4844b4e" class="cell" data-execution_count="7">
+<div id="4824c5c3" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual: Predicted vs. Actual Salary</span></span>
@@ -567,10 +567,10 @@ R² Score: 0.336</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/Predicted_vs_Actual_RF_Regression.png" class="img-fluid figure-img"></p>
-<figcaption>Predicted vs.&nbsp;Actual Salary (Random Forest Regression)</figcaption>
+<figcaption>Figure 10: Predicted vs.&nbsp;Actual Salary (Random Forest Regression)</figcaption>
 </figure>
 </div>
-<div id="7cd14587" class="cell" data-execution_count="8">
+<div id="8d1dde4c" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Feature importance: shows which variables most influence salary prediction</span></span>
@@ -591,7 +591,7 @@ REMOTE_TYPE_NAME_Remote: 0.014
 REMOTE_TYPE_NAME_Unknown: 0.000</code></pre>
 </div>
 </div>
-<div id="973663cc" class="cell" data-execution_count="9">
+<div id="f570faa8" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual: Feature Importance Bar Chart</span></span>
@@ -615,10 +615,10 @@ REMOTE_TYPE_NAME_Unknown: 0.000</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/Top_5_Feature_Importances_RF_Regression.png" class="img-fluid figure-img"></p>
-<figcaption>Top 5 Feature Importances (Random Forest Regression)</figcaption>
+<figcaption>Figure 11: Top 5 Feature Importances (Random Forest Regression)</figcaption>
 </figure>
 </div>
-<div id="a2b60802" class="cell" data-execution_count="10">
+<div id="e7b4285a" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate absolute prediction error for each job</span></span>
@@ -642,7 +642,7 @@ REMOTE_TYPE_NAME_Unknown: 0.000</code></pre>
 29554  338750.0                   7.0           [None]</code></pre>
 </div>
 </div>
-<div id="bb8b8a20" class="cell" data-execution_count="11">
+<div id="d3ab336b" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual: Highlight Outliers in Predicted vs. Actual Salary</span></span>
@@ -694,7 +694,7 @@ REMOTE_TYPE_NAME_Unknown: 0.000</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/Top_5_Outlier_Job_Salaries.png" class="img-fluid figure-img"></p>
-<figcaption>Top 5 Outlier Job Salaries</figcaption>
+<figcaption>Figure 12: Top 5 Outlier Job Salaries</figcaption>
 </figure>
 </div>
 <p><strong>Business relevance</strong></p>
@@ -707,7 +707,7 @@ REMOTE_TYPE_NAME_Unknown: 0.000</code></pre>
 <section id="classification-predicting-remote-vs-on-site-job" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="classification-predicting-remote-vs-on-site-job"><span class="header-section-number">3</span> Classification – Predicting Remote vs On-Site Job</h2>
 <p>We trained a logistic regression to predict Remote vs On-Site using MIN_YEARS_EXPERIENCE plus an available categorical descriptor (e.g., employment type or state).</p>
-<div id="3ba9962d" class="cell" data-execution_count="12">
+<div id="768da08a" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Classification: Predicting Remote vs On-Site Jobs</span></span>
@@ -772,7 +772,7 @@ REMOTE_TYPE_NAME_Unknown: 0.000</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="figures/Confusion_Matrix_Remote_vs_On-Site.png" class="img-fluid figure-img"></p>
-<figcaption>Confusion Matrix — Remote vs On-Site Classification</figcaption>
+<figcaption>Figure 13: Confusion Matrix — Remote vs On-Site Classification</figcaption>
 </figure>
 </div>
 <section id="classification-results-and-interpretation" class="level3" data-number="3.1">
@@ -866,7 +866,7 @@ REMOTE_TYPE_NAME_Unknown: 0.000</code></pre>
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/leoliu36\.github\.io\/ad688-employability-sp25A1-group7\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
